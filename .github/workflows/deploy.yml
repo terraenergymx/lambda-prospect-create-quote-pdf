@@ -62,7 +62,7 @@ jobs:
             DB_HOST="${{ secrets.DB_HOST_PRODUCTION }}"
             DB_PORT="${{ secrets.DB_PORT_PRODUCTION }}"
             DB_SECRET_NAME="${{ secrets.DB_SECRET_NAME_PRODUCTION }}"
-            S3_BUCKET="project-aurora-production"
+            S3_BUCKET_NAME="project-aurora-production"
           else
             echo "Setting up STAGING environment"
             ENVIRONMENT="staging"
@@ -70,7 +70,7 @@ jobs:
             DB_HOST="${{ secrets.DB_HOST_STAGING }}"
             DB_PORT="${{ secrets.DB_PORT_STAGING }}"
             DB_SECRET_NAME="${{ secrets.DB_SECRET_NAME_STAGING }}"
-            S3_BUCKET="project-aurora-staging"
+            S3_BUCKET_NAME="project-aurora-staging"
           fi
 
           echo "Deploying to Lambda: $LAMBDA_NAME"
@@ -93,6 +93,6 @@ jobs:
                 \"DB_PORT\": \"$DB_PORT\",
                 \"DB_SECRET_NAME\": \"$DB_SECRET_NAME\",
                 \"DB_NAME\": \"${{ secrets.AURORA_DB_NAME }}\",
-                \"S3_BUCKET\": \"$S3_BUCKET\"
+                \"S3_BUCKET_NAME\": \"$S3_BUCKET_NAME\"
               }
             }"

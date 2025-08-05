@@ -11,4 +11,4 @@ export const DB_PORT = parseInt(process.env.DB_PORT!, 10);
 export const DB_SECRET_NAME = process.env.DB_SECRET_NAME!;
 export const DB_NAME = process.env.DB_NAME!;
 // S3
-export const S3_BUCKET = process.env.S3_BUCKET!;
+export const S3_BUCKET_NAME = process.env.S3_BUCKET_NAME!;
