@@ -70,7 +70,7 @@ export async function createProspectQuotePdfUseCase(
     });
 
     // --- Cargar Recursos ---
-    const logoPath = path.join(__dirname, 'assets', 'logo-terra-energy.png');
+    const logoPath = path.join(__dirname, '..', 'assets', 'logo-terra-energy.png');
     // const panelsImagePath = path.join(__dirname, 'assets', 'panels.png');
     // const pointsGraphPath = path.join(__dirname, 'assets', 'points-graph.png');
 
