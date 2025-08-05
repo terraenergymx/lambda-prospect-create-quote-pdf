@@ -40,13 +40,13 @@ export const handler: Handler = async (
   try {
     if (event.httpMethod && typeof event.httpMethod === 'string') {
       const apiEvent = event as APIGatewayProxyEvent;
-      const result: APIGatewayProxyResult = await ApiGatewayAdapter(apiEvent, appConfig);
+      const result: APIGatewayProxyResult = await ApiGatewayAdapter(apiEvent);
       return result;
     }
 
     if (event.requestContext && event.requestContext.http) {
       const apiEvent = event as APIGatewayProxyEvent;
-      const result: APIGatewayProxyResult = await ApiGatewayAdapter(apiEvent, appConfig);
+      const result: APIGatewayProxyResult = await ApiGatewayAdapter(apiEvent);
       return result;
     }
     
