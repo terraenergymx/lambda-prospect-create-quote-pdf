@@ -11,7 +11,7 @@ import { titleCaseName } from '@utils/functions';
 import { jsPDF } from "jspdf";
 import * as fs from 'fs'; // Importar el módulo 'fs' para leer archivos
 import * as path from 'path'; // Importar el módulo 'path' para manejar rutas
-import imageToBase64 from 'image-to-base64';
+import { logoTerraEnergyBase64 } from '@assets/logo-terra-energy-base64';
 
 export async function createProspectQuotePdfUseCase(
     request: CreateProspectQuotePdfRequest,
@@ -71,32 +71,11 @@ export async function createProspectQuotePdfUseCase(
     });
 
     // --- Cargar Recursos ---
-    const logoPath = path.join(__dirname, '..', 'assets', 'logo-terra-energy.png');
-    // const panelsImagePath = path.join(__dirname, 'assets', 'panels.png');
-    // const pointsGraphPath = path.join(__dirname, 'assets', 'points-graph.png');
-
-    let logoBase64: string;
-    // let panelsImageBase64: string;
-    // let pointsGraphBase64: string;
-
-    try {
-        // Usar imageToBase64 para leer y convertir la imagen
-        // Esta librería devuelve la cadena Base64 sin el prefijo 'data:image/png;base64,'
-        const rawBase64 = await imageToBase64(logoPath);
-        // Añadir el prefijo de Data URI, que jsPDF espera
-        logoBase64 = 'data:image/png;base64,' + rawBase64;
-        console.log('Logo cargado correctamente desde:', logoPath);
-        console.log('Base64Raw:', rawBase64);
-        // Repite para otras imágenes si son diferentes
-        // const rawPanelsBase64 = await imageToBase64(panelsImagePath);
-        // panelsImageBase64 = 'data:image/png;base64,' + rawPanelsBase64;
-        // const rawPointsGraphBase64 = await imageToBase64(pointsGraphPath);
-        // pointsGraphBase64 = 'data:image/png;base64,' + rawPointsGraphBase64;
-
-    } catch (error) {
-        console.error('Error al cargar una imagen necesaria para el PDF:', error);
-        throw new Error('No se pudo cargar una imagen esencial para la generación del PDF. Asegúrate de que los archivos de assets estén incluidos en el paquete de despliegue de Lambda y la ruta sea correcta.');
-    }
+    // La cadena Base64 del logo ya está disponible a través de la importación
+    const logoBase64 = logoTerraEnergyBase64;
+    // Si tienes otras imágenes, puedes importarlas de manera similar:
+    // import { panelsImageBase64 } from '@assets/panels-image-base64';
+    // const panelsImageBase64 = panelsImageBase64;
     
     // --- Colores ---
     const primaryGreen = '#99ca3c'; // Verde de la barra y puntos
