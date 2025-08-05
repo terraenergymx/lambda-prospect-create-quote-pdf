@@ -5,7 +5,10 @@
  * Lee variables desde process.env y exporta valores tipados
  */
 
-// Cognito
-export const COGNITO_CLIENT_ID = process.env.COGNITO_CLIENT_ID!;
-export const COGNITO_SECRET_NAME = process.env.COGNITO_SECRET_NAME!;
-export const COGNITO_REGION = process.env.COGNITO_REGION!;
+// Base de datos
+export const DB_HOST = process.env.DB_HOST!;
+export const DB_PORT = parseInt(process.env.DB_PORT!, 10);
+export const DB_SECRET_NAME = process.env.DB_SECRET_NAME!;
+export const DB_NAME = process.env.DB_NAME!;
+// S3
+export const S3_BUCKET = process.env.S3_BUCKET!;
