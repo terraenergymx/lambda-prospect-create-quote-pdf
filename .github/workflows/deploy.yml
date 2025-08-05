@@ -1,0 +1,101 @@
+# Nombre del workflow que aparecerá en la pestaña "Actions" de GitHub
+name: Deploy Lambda to AWS by Environment
+
+# Disparadores: Este workflow se ejecutará en cada push a las ramas 'main' y 'develop'
+on:
+  push:
+    branches:
+      - main
+      - develop
+
+jobs:
+  deploy_lambda:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Descarga tu código del repositorio
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Configura el entorno de Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      # 3. Instala las dependencias del proyecto
+      - name: Install dependencies
+        run: npm ci
+
+      # 4. Compila el código de TypeScript
+      - name: Build TypeScript code
+        run: npm run build
+
+      # 5. Prepara el paquete de producción
+      - name: Prepare production package
+        run: |
+          mkdir -p package
+          cp -r dist/* package/
+          cp package.json package-lock.json package/
+          cd package && npm ci --omit=dev
+
+      # 6. Crea el archivo .zip
+      - name: Create zip archive
+        run: cd package && zip -r ../function.zip .
+
+      # 7. Configura las credenciales de AWS
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      # 8. Define variables de entorno y despliega en la Lambda correcta
+      - name: Deploy to Lambda based on branch
+        run: |
+          # --- INICIO DE LA LÓGICA CLAVE ---
+          # Determina las variables correctas según la rama
+          if [[ $GITHUB_REF == 'refs/heads/main' ]]; then
+            echo "Setting up PRODUCTION environment"
+            ENVIRONMENT="PRODUCTION"
+            LAMBDA_NAME="${{ secrets.LAMBDA_FUNCTION_NAME_PRODUCTION }}"
+            CLIENT_ID="${{ secrets.COGNITO_CLIENT_ID_PRODUCTION }}"
+            SECRET_NAME="${{ secrets.COGNITO_SECRET_NAME_PRODUCTION }}"
+            DB_HOST="${{ secrets.DB_HOST_PRODUCTION }}"
+            DB_PORT="${{ secrets.DB_PORT_PRODUCTION }}"
+            DB_SECRET_NAME="${{ secrets.DB_SECRET_NAME_PRODUCTION }}"
+          else
+            echo "Setting up STAGING environment"
+            ENVIRONMENT="STAGING"
+            LAMBDA_NAME="${{ secrets.LAMBDA_FUNCTION_NAME_STAGING }}"
+            CLIENT_ID="${{ secrets.COGNITO_CLIENT_ID_STAGING }}"
+            SECRET_NAME="${{ secrets.COGNITO_SECRET_NAME_STAGING }}"
+            DB_HOST="${{ secrets.DB_HOST_STAGING }}"
+            DB_PORT="${{ secrets.DB_PORT_STAGING }}"
+            DB_SECRET_NAME="${{ secrets.DB_SECRET_NAME_STAGING }}"
+          fi
+
+          echo "Deploying to Lambda: $LAMBDA_NAME"
+
+          # 1. Actualiza el código de la función Lambda específica del ambiente
+          echo "1. Updating function code..."
+          aws lambda update-function-code --function-name "$LAMBDA_NAME" --zip-file fileb://function.zip
+          
+          echo "2. Waiting for code update to complete..."
+          aws lambda wait function-updated --function-name "$LAMBDA_NAME"
+          
+          # 2. Actualiza la configuración de la función con las variables correctas
+          echo "3. Updating function configuration..."
+          aws lambda update-function-configuration \
+            --function-name "$LAMBDA_NAME" \
+            --environment "{
+              \"Variables\": {
+                \"ENVIRONMENT\": \"$ENVIRONMENT\",
+                \"COGNITO_REGION\": \"${{ secrets.AWS_REGION }}\",
+                \"COGNITO_CLIENT_ID\": \"$CLIENT_ID\",
+                \"COGNITO_SECRET_NAME\": \"$SECRET_NAME\",
+                \"DB_HOST\": \"$DB_HOST\",
+                \"DB_PORT\": \"$DB_PORT\",
+                \"DB_SECRET_NAME\": \"$DB_SECRET_NAME\"
+              }
+            }"
