@@ -79,17 +79,21 @@ export async function createProspectQuotePdfUseCase(
     // let pointsGraphBase64: string;
 
     try {
-        // Leer la imagen del logo como un buffer y convertirla a Base64
+        // Leer la imagen del logo como un buffer
         const logoBuffer = fs.readFileSync(logoPath);
-        logoBase64 = logoBuffer.toString('base64');
+        // Convertir a Base64 y añadir el prefijo de Data URI
+        logoBase64 = 'data:image/png;base64,' + logoBuffer.toString('base64');
+        console.log('Logo cargado correctamente desde:', logoPath);
+        console.log('Logo Base64:', logoBase64);
+        // Repite para otras imágenes si son diferentes
         // const panelsBuffer = fs.readFileSync(panelsImagePath);
-        // panelsImageBase64 = panelsBuffer.toString('base64');
+        // panelsImageBase64 = 'data:image/png;base64,' + panelsBuffer.toString('base64');
         // const pointsGraphBuffer = fs.readFileSync(pointsGraphPath);
-        // pointsGraphBase64 = pointsGraphBuffer.toString('base64');
+        // pointsGraphBase64 = 'data:image/png;base64,' + pointsGraphBuffer.toString('base64');
 
     } catch (error) {
         console.error('Error al cargar una imagen necesaria para el PDF:', error);
-        throw new Error('No se pudo cargar una imagen esencial para la generación del PDF. Asegúrate de que los archivos de assets estén incluidos en el paquete de despliegue de Lambda.');
+        throw new Error('No se pudo cargar una imagen esencial para la generación del PDF. Asegúrate de que los archivos de assets estén incluidos en el paquete de despliegue de Lambda y la ruta sea correcta.');
     }
     
     // --- Colores ---
