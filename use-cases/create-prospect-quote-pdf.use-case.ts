@@ -31,8 +31,13 @@ export async function createProspectQuotePdfUseCase(
     const formattedLastName = titleCaseName(request.last_name);
 
 
-    // Inicializar base de datos y repositorios
+    // Crear instancia del repositorio
     const prospectQuoteRepository = ProspectQuoteRepository();
+
+    // Inicializar la base de datos
+    await prospectQuoteRepository.initializeDatabase();
+    // Inicializar el cliente S3
+    await prospectQuoteRepository.initializeS3();
 
     // Tarifa CFE
     const cfeTariffId = request.quote_details.cfe_info.tariff_type_id;
@@ -106,10 +111,6 @@ export async function createProspectQuotePdfUseCase(
     doc.setFontSize(16);
     doc.setTextColor(lightTextColor);
     doc.text(prospectQuote.getProjectNumber(), 20, 115);
-
-
-    // Inicializar el servicio S3
-    await prospectQuoteRepository.initializeS3();
 
     // --- Generar el PDF ---
     const pdfBuffer = doc.output('arraybuffer');
