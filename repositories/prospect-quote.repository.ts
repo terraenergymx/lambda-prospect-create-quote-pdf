@@ -51,7 +51,7 @@ export function ProspectQuoteRepository() {
     try {
       connection = await beginTransaction();
 
-      const sql = `SELECT name FROM cfe_tariffs WHERE id = ? LIMIT 1;`;
+      const sql = `SELECT id, tariff_code FROM cfe_tariffs WHERE id = ? LIMIT 1;`;
       const params = [id];
 
       // Ejecuta la consulta usando la conexión obtenida.
@@ -64,7 +64,7 @@ export function ProspectQuoteRepository() {
         console.log(`La tarifa CFE con ID ${id} existe.`);
         return {
           tariff_type_id: rows[0].id,
-          tariff_type: rows[0].name,
+          tariff_type: rows[0].tariff_code,
         }; // Retorna la información de la tarifa
       }
       console.log(`La tarifa CFE con ID ${id} no existe.`);
