@@ -11,6 +11,7 @@ import { titleCaseName } from '@utils/functions';
 import { jsPDF } from "jspdf";
 import * as fs from 'fs'; // Importar el módulo 'fs' para leer archivos
 import * as path from 'path'; // Importar el módulo 'path' para manejar rutas
+import imageToBase64 from 'image-to-base64';
 
 export async function createProspectQuotePdfUseCase(
     request: CreateProspectQuotePdfRequest,
@@ -79,17 +80,18 @@ export async function createProspectQuotePdfUseCase(
     // let pointsGraphBase64: string;
 
     try {
-        // Leer la imagen del logo como un buffer
-        const logoBuffer = fs.readFileSync(logoPath);
-        // Convertir a Base64 y añadir el prefijo de Data URI
-        logoBase64 = 'data:image/png;base64,' + logoBuffer.toString('base64');
+        // Usar imageToBase64 para leer y convertir la imagen
+        // Esta librería devuelve la cadena Base64 sin el prefijo 'data:image/png;base64,'
+        const rawBase64 = await imageToBase64(logoPath);
+        // Añadir el prefijo de Data URI, que jsPDF espera
+        logoBase64 = 'data:image/png;base64,' + rawBase64;
         console.log('Logo cargado correctamente desde:', logoPath);
-        console.log('Logo Base64:', logoBase64);
+        console.log('Base64Raw:', rawBase64);
         // Repite para otras imágenes si son diferentes
-        // const panelsBuffer = fs.readFileSync(panelsImagePath);
-        // panelsImageBase64 = 'data:image/png;base64,' + panelsBuffer.toString('base64');
-        // const pointsGraphBuffer = fs.readFileSync(pointsGraphPath);
-        // pointsGraphBase64 = 'data:image/png;base64,' + pointsGraphBuffer.toString('base64');
+        // const rawPanelsBase64 = await imageToBase64(panelsImagePath);
+        // panelsImageBase64 = 'data:image/png;base64,' + rawPanelsBase64;
+        // const rawPointsGraphBase64 = await imageToBase64(pointsGraphPath);
+        // pointsGraphBase64 = 'data:image/png;base64,' + rawPointsGraphBase64;
 
     } catch (error) {
         console.error('Error al cargar una imagen necesaria para el PDF:', error);
