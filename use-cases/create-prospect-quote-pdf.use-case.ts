@@ -69,7 +69,7 @@ export async function createProspectQuotePdfUseCase(
 
     // --- Cargar Recursos ---
     var img = new Image()
-    img.src = 'assets/sample.png'
+    img.src = '@assets/logo-terra-energy.png'; // Ruta al logo de Terra Energy
 
     // --- Colores ---
     const primaryGreen = '#99ca3c'; // Verde de la barra y puntos
