@@ -100,7 +100,6 @@ export async function createProspectQuotePdfUseCase(
     // Nombre del Prospecto en negrita
     doc.setTextColor(darkTextColor);
     doc.setFontSize(50);
-    doc.setFont(montserratMedium);
 
     doc.text(prospectQuote.getClientName(), 30, 145);
 
@@ -123,7 +122,7 @@ export async function createProspectQuotePdfUseCase(
     const options: Intl.DateTimeFormatOptions = { day: '2-digit', month: 'long', year: 'numeric' };
     const formattedDate = currentDate.toLocaleDateString('es-MX', options);
     doc.setFontSize(10);
-    doc.text(formattedDate, 100, 165);
+    doc.text(formattedDate, 100, 164).setFont('', 'bold');
 
     // --- Generar el PDF ---
     const pdfBuffer = doc.output('arraybuffer');
