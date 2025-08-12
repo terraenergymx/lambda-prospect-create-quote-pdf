@@ -7,16 +7,12 @@ import { ProspectQuote } from '@entity/prospect-coute';
 import { ProspectQuoteRepository } from '@repositories/prospect-quote.repository';
 // Utils
 import { titleCaseName } from '@utils/functions';
-// Dependencias
 import { jsPDF } from "jspdf";
-import * as fs from 'fs'; // Importar el módulo 'fs' para leer archivos
-import * as path from 'path'; // Importar el módulo 'path' para manejar rutas
-import { logoTerraEnergyBase64 } from '@assets/logo-terra-energy-base64';
+// Imagenes de paginas
 import { paginaInicialBase64 } from '@assets/pagina-inicial-base64';
+import { paginaDesgloceBase64 } from '@assets/pagina-desgloce-base64';
 import { paginaBeneficiosBase64 } from '@assets/pagina-beneficios-base64';
 import { paginaInformacionBase64 } from '@assets/pagina-informacion-base64';
-// Fuentes
-import { MontserratMedium } from '@assets/font/montserrat-medium';
 
 export async function createProspectQuotePdfUseCase(
     request: CreateProspectQuotePdfRequest,
@@ -37,7 +33,6 @@ export async function createProspectQuotePdfUseCase(
     // Formatear el nombre y apellido
     const formattedName = titleCaseName(request.name);
     const formattedLastName = titleCaseName(request.last_name);
-
 
     // Crear instancia del repositorio
     const prospectQuoteRepository = ProspectQuoteRepository();
@@ -77,13 +72,10 @@ export async function createProspectQuotePdfUseCase(
 
     // --- Cargar Recursos ---
     // La cadena Base64 del logo ya está disponible a través de la importación
-    const logoBase64 = logoTerraEnergyBase64;
     const paginaInicialBase64Content = paginaInicialBase64;
+    const paginaDesgloceBase64Content = paginaDesgloceBase64;
     const paginaBeneficiosBase64Content = paginaBeneficiosBase64;
     const paginaInformacionBase64Content = paginaInformacionBase64;
-
-    // --- Fuentes ---
-    const montserratMedium = MontserratMedium;
 
     // --- Colores ---
     const primaryGreen = '#90AB26'; // Verde de la barra y puntos
@@ -91,7 +83,6 @@ export async function createProspectQuotePdfUseCase(
     const lightGrayBg = '#F1F2F0';  // Gris del contenedor redondeado
     const darkGray = '#E0DFDF'; // Gris oscuro
     const darkTextColor = '#353535';
-    const lightTextColor = '#8c8c8c';
 
     // Pagina Inicial
     // Establecer la imagen de la pagina inicial al 100% de la pagina (landscape) y encimar el nombre y folio del prospecto
@@ -109,6 +100,10 @@ export async function createProspectQuotePdfUseCase(
     // Folio del Prospecto
     doc.setFontSize(25);
     doc.text(prospectQuote.getTerralinkId(), 30, 180);
+
+    // Pagina de desgloce
+    doc.addPage();
+    doc.addImage(paginaDesgloceBase64Content, 'PNG', 0, 0, 279.4, 215.9);
 
     // Pagina de beneficios
     doc.addPage();
