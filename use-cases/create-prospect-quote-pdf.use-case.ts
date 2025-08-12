@@ -14,6 +14,7 @@ import * as path from 'path'; // Importar el módulo 'path' para manejar rutas
 import { logoTerraEnergyBase64 } from '@assets/logo-terra-energy-base64';
 import { paginaInicialBase64 } from '@assets/pagina-inicial-base64';
 import { paginaBeneficiosBase64 } from '@assets/pagina-beneficios-base64';
+import { paginaInformacionBase64 } from '@assets/pagina-informacion-base64';
 
 export async function createProspectQuotePdfUseCase(
     request: CreateProspectQuotePdfRequest,
@@ -77,9 +78,7 @@ export async function createProspectQuotePdfUseCase(
     const logoBase64 = logoTerraEnergyBase64;
     const paginaInicialBase64Content = paginaInicialBase64;
     const paginaBeneficiosBase64Content = paginaBeneficiosBase64;
-    // Si tienes otras imágenes, puedes importarlas de manera similar:
-    // import { panelsImageBase64 } from '@assets/panels-image-base64';
-    // const panelsImageBase64 = panelsImageBase64;
+    const paginaInformacionBase64Content = paginaInformacionBase64;
     
     // --- Colores ---
     const primaryGreen = '#90AB26'; // Verde de la barra y puntos
@@ -93,23 +92,33 @@ export async function createProspectQuotePdfUseCase(
     // Establecer la imagen de la pagina inicial al 100% de la pagina (landscape) y encimar el nombre y folio del prospecto
     doc.addImage(paginaInicialBase64Content, 'PNG', 0, 0, 279.4, 215.9);
 
-    // Nombre del Prospecto
+    // Nombre del Prospecto en negrita
     doc.setTextColor(darkTextColor);
-    doc.setFontSize(28);
-
-    doc.text(prospectQuote.getClientName(), 20, 180);
+    doc.setFontSize(38);
+    doc.text(prospectQuote.getClientName(), 23, 144).setFont('helvetica', 'bold');
 
     // Apellido del Prospecto
-    doc.text(prospectQuote.getClientLastName(), 20, 200);
+    doc.setFontSize(28);
+    doc.text(prospectQuote.getClientLastName(), 23, 158);
 
     // Folio del Prospecto
     doc.setFontSize(16);
     doc.setTextColor(lightTextColor);
-    doc.text(prospectQuote.getTerralinkId(), 20, 220);
+    doc.text(prospectQuote.getTerralinkId(), 23, 172);
 
     // Pagina de beneficios
     doc.addPage();
     doc.addImage(paginaBeneficiosBase64Content, 'PNG', 0, 0, 279.4, 215.9);
+
+    // Pagina de información
+    doc.addPage();
+    doc.addImage(paginaInformacionBase64Content, 'PNG', 0, 0, 279.4, 215.9);
+    // Fecha actual en formato: 01 de enero del 2025
+    const currentDate = new Date();
+    const options: Intl.DateTimeFormatOptions = { day: '2-digit', month: 'long', year: 'numeric' };
+    const formattedDate = currentDate.toLocaleDateString('es-MX', options);
+    doc.setFontSize(10);
+    doc.text(formattedDate, 93, 155);
 
     // --- Generar el PDF ---
     const pdfBuffer = doc.output('arraybuffer');
