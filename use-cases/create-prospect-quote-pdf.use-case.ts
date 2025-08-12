@@ -95,15 +95,16 @@ export async function createProspectQuotePdfUseCase(
     // Nombre del Prospecto en negrita
     doc.setTextColor(darkTextColor);
     doc.setFontSize(60);
-    doc.text(prospectQuote.getClientName(), 23, 144).setFont('arial', 'bold');
+    doc.setFont('Montserrat', 'bold');
+
+    doc.text(prospectQuote.getClientName(), 30, 155);
 
     // Apellido del Prospecto
-    doc.setFontSize(60);
-    doc.text(prospectQuote.getClientLastName(), 23, 158).setFont('arial', 'bold');
+    doc.text(prospectQuote.getClientLastName(), 30, 175);
 
     // Folio del Prospecto
     doc.setFontSize(28);
-    doc.text(prospectQuote.getTerralinkId(), 23, 172);
+    doc.text(prospectQuote.getTerralinkId(), 30, 190);
 
     // Pagina de beneficios
     doc.addPage();
@@ -117,7 +118,7 @@ export async function createProspectQuotePdfUseCase(
     const options: Intl.DateTimeFormatOptions = { day: '2-digit', month: 'long', year: 'numeric' };
     const formattedDate = currentDate.toLocaleDateString('es-MX', options);
     doc.setFontSize(10);
-    doc.text(formattedDate, 100, 160);
+    doc.text(formattedDate, 100, 170);
 
     // --- Generar el PDF ---
     const pdfBuffer = doc.output('arraybuffer');
