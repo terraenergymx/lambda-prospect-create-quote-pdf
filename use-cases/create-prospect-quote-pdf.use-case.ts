@@ -90,26 +90,26 @@ export async function createProspectQuotePdfUseCase(
     const lightTextColor = '#8c8c8c';
 
     // Pagina Inicial
-    // Establecer la imagen de la pagina inicial al 100% de la pagina y encimar el nombre y folio del prospecto
-    doc.addImage(paginaInicialBase64Content, 'PNG', 0, 0, 215.9, 279.4);
+    // Establecer la imagen de la pagina inicial al 100% de la pagina (landscape) y encimar el nombre y folio del prospecto
+    doc.addImage(paginaInicialBase64Content, 'PNG', 0, 0, 279.4, 215.9);
 
     // Nombre del Prospecto
     doc.setTextColor(darkTextColor);
     doc.setFontSize(28);
-    
-    doc.text(prospectQuote.getClientName(), 20, 105);
+
+    doc.text(prospectQuote.getClientName(), 20, 180);
 
     // Apellido del Prospecto
-    doc.text(prospectQuote.getClientLastName(), 20, 115);
+    doc.text(prospectQuote.getClientLastName(), 20, 200);
 
     // Folio del Prospecto
     doc.setFontSize(16);
     doc.setTextColor(lightTextColor);
-    doc.text(prospectQuote.getTerralinkId(), 20, 125);
+    doc.text(prospectQuote.getTerralinkId(), 20, 220);
 
     // Pagina de beneficios
     doc.addPage();
-    doc.addImage(paginaBeneficiosBase64Content, 'PNG', 0, 0, 215.9, 279.4);
+    doc.addImage(paginaBeneficiosBase64Content, 'PNG', 0, 0, 279.4, 215.9);
 
     // --- Generar el PDF ---
     const pdfBuffer = doc.output('arraybuffer');
