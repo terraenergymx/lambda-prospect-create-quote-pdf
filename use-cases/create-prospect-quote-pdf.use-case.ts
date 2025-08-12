@@ -15,6 +15,8 @@ import { logoTerraEnergyBase64 } from '@assets/logo-terra-energy-base64';
 import { paginaInicialBase64 } from '@assets/pagina-inicial-base64';
 import { paginaBeneficiosBase64 } from '@assets/pagina-beneficios-base64';
 import { paginaInformacionBase64 } from '@assets/pagina-informacion-base64';
+// Fuentes
+import { MontserratMedium } from '@assets/font/montserrat-medium';
 
 export async function createProspectQuotePdfUseCase(
     request: CreateProspectQuotePdfRequest,
@@ -79,7 +81,10 @@ export async function createProspectQuotePdfUseCase(
     const paginaInicialBase64Content = paginaInicialBase64;
     const paginaBeneficiosBase64Content = paginaBeneficiosBase64;
     const paginaInformacionBase64Content = paginaInformacionBase64;
-    
+
+    // --- Fuentes ---
+    const montserratMedium = MontserratMedium;
+
     // --- Colores ---
     const primaryGreen = '#90AB26'; // Verde de la barra y puntos
     const primaryCyan = '#178285'; // Cian de la barra y puntos
@@ -94,17 +99,17 @@ export async function createProspectQuotePdfUseCase(
 
     // Nombre del Prospecto en negrita
     doc.setTextColor(darkTextColor);
-    doc.setFontSize(60);
-    doc.setFont('Montserrat', 'bold');
+    doc.setFontSize(50);
+    doc.setFont(montserratMedium);
 
-    doc.text(prospectQuote.getClientName(), 30, 155);
+    doc.text(prospectQuote.getClientName(), 30, 145);
 
     // Apellido del Prospecto
-    doc.text(prospectQuote.getClientLastName(), 30, 175);
+    doc.text(prospectQuote.getClientLastName(), 30, 165);
 
     // Folio del Prospecto
-    doc.setFontSize(28);
-    doc.text(prospectQuote.getTerralinkId(), 30, 190);
+    doc.setFontSize(25);
+    doc.text(prospectQuote.getTerralinkId(), 30, 180);
 
     // Pagina de beneficios
     doc.addPage();
@@ -118,7 +123,7 @@ export async function createProspectQuotePdfUseCase(
     const options: Intl.DateTimeFormatOptions = { day: '2-digit', month: 'long', year: 'numeric' };
     const formattedDate = currentDate.toLocaleDateString('es-MX', options);
     doc.setFontSize(10);
-    doc.text(formattedDate, 100, 170);
+    doc.text(formattedDate, 100, 165);
 
     // --- Generar el PDF ---
     const pdfBuffer = doc.output('arraybuffer');
