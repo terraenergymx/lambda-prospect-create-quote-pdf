@@ -12,6 +12,8 @@ import { jsPDF } from "jspdf";
 import * as fs from 'fs'; // Importar el módulo 'fs' para leer archivos
 import * as path from 'path'; // Importar el módulo 'path' para manejar rutas
 import { logoTerraEnergyBase64 } from '@assets/logo-terra-energy-base64';
+import { paginaInicialBase64 } from '@assets/pagina-inicial-base64';
+import { paginaBeneficiosBase64 } from '@assets/pagina-beneficios-base64';
 
 export async function createProspectQuotePdfUseCase(
     request: CreateProspectQuotePdfRequest,
@@ -73,56 +75,41 @@ export async function createProspectQuotePdfUseCase(
     // --- Cargar Recursos ---
     // La cadena Base64 del logo ya está disponible a través de la importación
     const logoBase64 = logoTerraEnergyBase64;
+    const paginaInicialBase64Content = paginaInicialBase64;
+    const paginaBeneficiosBase64Content = paginaBeneficiosBase64;
     // Si tienes otras imágenes, puedes importarlas de manera similar:
     // import { panelsImageBase64 } from '@assets/panels-image-base64';
     // const panelsImageBase64 = panelsImageBase64;
     
     // --- Colores ---
-    const primaryGreen = '#99ca3c'; // Verde de la barra y puntos
-    const lightGrayBg = '#f6f6f6';  // Gris del contenedor redondeado
+    const primaryGreen = '#90AB26'; // Verde de la barra y puntos
+    const primaryCyan = '#178285'; // Cian de la barra y puntos
+    const lightGrayBg = '#F1F2F0';  // Gris del contenedor redondeado
+    const darkGray = '#E0DFDF'; // Gris oscuro
     const darkTextColor = '#353535';
     const lightTextColor = '#8c8c8c';
 
-    // --- Dibujar Elementos del Diseño ---
+    // Pagina Inicial
+    // Establecer la imagen de la pagina inicial al 100% de la pagina y encimar el nombre y folio del prospecto
+    doc.addImage(paginaInicialBase64Content, 'PNG', 0, 0, 215.9, 279.4);
 
-    // 1. Barra verde superior
-    doc.setFillColor(primaryGreen);
-    doc.rect(0, 0, 215.9, 15, 'F'); // x, y, ancho, alto, estilo ('F' = fill)
-
-    // 2. Logo de Terra Energy
-    // Usar la cadena Base64 directamente con jsPDF
-    // El segundo argumento es el formato de la imagen (ej. 'PNG', 'JPEG')
-    doc.addImage(logoBase64, 'PNG', 20, 25, 40, 10); // x, y, ancho, alto
-
-    // 3. Contenedor gris redondeado
-    doc.setFillColor(lightGrayBg);
-    doc.roundedRect(80, 40, 120, 180, 5, 5, 'F'); // x, y, ancho, alto, radioX, radioY, estilo
-
-    // 4. Imagen de los paneles solares (dentro del contenedor gris)
-    // Si es una imagen diferente, usa su propia variable base64.
-    // Si es el mismo logo, puedes reutilizar logoBase64.
-    doc.addImage(logoBase64, 'PNG', 85, 45, 110, 150); // Placeholder, reemplaza con 'panelsImageBase64' si aplica
-
-    // 5. Texto "terraenergy.mx"
-    doc.setFont('Helvetica', 'normal'); // Asegúrate de que 'Helvetica' es una fuente estándar o está incrustada
-    doc.setFontSize(10);
-    doc.setTextColor(lightTextColor);
-    doc.text("terraenergy.mx", 168, 215);
-
-    // 6. Gráfico de puntos
-    // Si es una imagen diferente, usa su propia variable base64.
-    doc.addImage(logoBase64, 'PNG', 20, 80, 15, 15); // Placeholder, reemplaza con 'pointsGraphBase64' si aplica
-
-    // 7. Texto Principal (Cliente y Proyecto)
-    // NOTA: Si usas doc.setFont("CustomFont", "normal"); debes incrustar la fuente "CustomFont" en jsPDF
-    // de antemano para que funcione en Lambda. De lo contrario, usa una fuente estándar como 'Helvetica'.
+    // Nombre del Prospecto
     doc.setTextColor(darkTextColor);
     doc.setFontSize(28);
+    
     doc.text(prospectQuote.getClientName(), 20, 105);
 
+    // Apellido del Prospecto
+    doc.text(prospectQuote.getClientLastName(), 20, 115);
+
+    // Folio del Prospecto
     doc.setFontSize(16);
     doc.setTextColor(lightTextColor);
-    doc.text(prospectQuote.getProjectNumber(), 20, 115);
+    doc.text(prospectQuote.getTerralinkId(), 20, 125);
+
+    // Pagina de beneficios
+    doc.addPage();
+    doc.addImage(paginaBeneficiosBase64Content, 'PNG', 0, 0, 215.9, 279.4);
 
     // --- Generar el PDF ---
     const pdfBuffer = doc.output('arraybuffer');

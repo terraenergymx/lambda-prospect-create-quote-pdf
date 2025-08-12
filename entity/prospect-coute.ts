@@ -87,13 +87,16 @@ export class ProspectQuote {
 
     // Getter methods
     public getClientName(): string {
-        return `${this.name} ${this.last_name}`;
+        return this.name;
+    }
+    public getClientLastName(): string {
+        return this.last_name;
     }
     public getProspectId(): string {
         return this.prospect_id;
     }
-    public getProjectNumber(): string {
-        return `Proyecto #${this.prospect_id}`;
+    public getTerralinkId(): string {
+        return this.terralink_id;
     }
     public getSystemProposed(): SystemProposed {
         return this.system_proposed;
