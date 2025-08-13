@@ -44,40 +44,40 @@ export function ProspectQuoteRepository() {
    * @param id ID de la tarifa a verificar.
    * @returns true si la tarifa ya existe, false en caso contrario.
    */
-  async function getCfeTariffById(id: number): Promise<CfeInfo | null> {
-    console.log(`Verificando si la tarifa CFE con ID ${id} existe...`);
+  // async function getCfeTariffById(id: number): Promise<CfeInfo | null> {
+  //   console.log(`Verificando si la tarifa CFE con ID ${id} existe...`);
 
-    let connection; // Declara la conexión fuera del try para que sea accesible en el finally/catch
-    try {
-      connection = await beginTransaction();
+  //   let connection; // Declara la conexión fuera del try para que sea accesible en el finally/catch
+  //   try {
+  //     connection = await beginTransaction();
 
-      const sql = `SELECT id, tariff_code FROM cfe_tariffs WHERE id = ? LIMIT 1;`;
-      const params = [id];
+  //     const sql = `SELECT id, tariff_code FROM cfe_tariffs WHERE id = ? LIMIT 1;`;
+  //     const params = [id];
 
-      // Ejecuta la consulta usando la conexión obtenida.
-      const rows = await execute(connection, sql, params);
+  //     // Ejecuta la consulta usando la conexión obtenida.
+  //     const rows = await execute(connection, sql, params);
 
-      // Confirma la "transacción" para liberar la conexión al pool.
-      await commitTransaction(connection);
+  //     // Confirma la "transacción" para liberar la conexión al pool.
+  //     await commitTransaction(connection);
 
-      if (rows && rows.length > 0) {
-        console.log(`La tarifa CFE con ID ${id} existe.`);
-        return {
-          tariff_type_id: rows[0].id,
-          tariff_type: rows[0].tariff_code,
-        }; // Retorna la información de la tarifa
-      }
-      console.log(`La tarifa CFE con ID ${id} no existe.`);
-      return null; // Retorna null si no se encontró la tarifa
-    } catch (error) {
-      console.error(`Error al verificar la tarifa CFE con ID ${id}:`, error);
-      // Si hubo un error, revierte la "transacción" para liberar la conexión.
-      if (connection) {
-        await rollbackTransaction(connection);
-      }
-      throw new Error('Error al verificar la tarifa CFE');
-    }
-  }
+  //     if (rows && rows.length > 0) {
+  //       console.log(`La tarifa CFE con ID ${id} existe.`);
+  //       return {
+  //         tariff_type_id: rows[0].id,
+  //         tariff_type: rows[0].tariff_code,
+  //       }; // Retorna la información de la tarifa
+  //     }
+  //     console.log(`La tarifa CFE con ID ${id} no existe.`);
+  //     return null; // Retorna null si no se encontró la tarifa
+  //   } catch (error) {
+  //     console.error(`Error al verificar la tarifa CFE con ID ${id}:`, error);
+  //     // Si hubo un error, revierte la "transacción" para liberar la conexión.
+  //     if (connection) {
+  //       await rollbackTransaction(connection);
+  //     }
+  //     throw new Error('Error al verificar la tarifa CFE');
+  //   }
+  // }
 
   /**
    * Sube un archivo PDF generado a S3.
@@ -98,7 +98,7 @@ export function ProspectQuoteRepository() {
   return {
     initializeDatabase,
     initializeS3,
-    getCfeTariffById,
+    // getCfeTariffById,
     uploadPdfToS3,
   };
 }
