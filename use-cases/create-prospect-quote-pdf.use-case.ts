@@ -138,15 +138,15 @@ export async function createProspectQuotePdfUseCase(
 
     // Coordenadas aproximadas según maqueta (ajustables ±2–4 mm si hace falta)
     const P = {
-    potencia:                pct(0.205, 0.335),
-    espacio:                 pct(0.385, 0.335),
-    suscripcionMensual:      pct(0.715, 0.290),
+    potencia:                pct(0.190, 0.335),
+    espacio:                 pct(0.370, 0.335),
+    suscripcionMensual:      pct(0.745, 0.310),
     ahorroMensualCinta:      pct(0.730, 0.430),
-    cfeActualmentePagas:     pct(0.205, 0.565),
-    terraPagaras:            pct(0.370, 0.565),
-    pagoTotalPeriodo:        pct(0.760, 0.635),
-    contratoPeriodoTexto:    pct(0.500, 0.865),
-    ahorroAnualPastilla:     pct(0.845, 0.870),
+    cfeActualmentePagas:     pct(0.190, 0.565),
+    terraPagaras:            pct(0.350, 0.565),
+    pagoTotalPeriodo:        pct(0.660, 0.635),
+    contratoPeriodoTexto:    pct(0.500, 0.665),
+    ahorroAnualPastilla:     pct(0.845, 0.670),
     };
 
     // ========= Estilos por bloque (solo tipografía y alineación) =========
