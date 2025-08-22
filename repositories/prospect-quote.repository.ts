@@ -44,7 +44,7 @@ export function ProspectQuoteRepository() {
    * @param id ID de la tarifa a verificar.
    * @returns true si la tarifa ya existe, false en caso contrario.
    */
-  async function getCfeTariffById(id: number): Promise<CfeInfo | null> {
+  async function getCfeTariffById(id: number): Promise<{ tariff_type_id: number; tariff_type: string; } | null> {
     console.log(`Verificando si la tarifa CFE con ID ${id} existe...`);
 
     let connection; // Declara la conexión fuera del try para que sea accesible en el finally/catch
