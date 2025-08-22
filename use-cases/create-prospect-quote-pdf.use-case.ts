@@ -50,7 +50,7 @@ export async function createProspectQuotePdfUseCase(
     if (cfeTariff === null) {
         throw new Error(`La tarifa CFE con ID ${cfeTariffId} no existe.`);
     } else {
-        request.quote_details.cfe_info = cfeTariff;
+        request.quote_details.cfe_info = {...request.quote_details.cfe_info, ...cfeTariff};
     }
 
     // Crear la entidad ProspectQuote
@@ -156,23 +156,23 @@ export async function createProspectQuotePdfUseCase(
     doc.text(areaTxt,     P.espacio.x,  P.espacio.y,  { align: 'center', baseline: 'middle' });
 
     // “Suscripción mensual:”
-    doc.setFontSize(18);
-    doc.text(suscripcionMensualTxt, P.suscripcionMensual.x, P.suscripcionMensual.y, { align: 'center' });
+    // doc.setFontSize(18);
+    // doc.text(suscripcionMensualTxt, P.suscripcionMensual.x, P.suscripcionMensual.y, { align: 'center' });
 
-    // Cinta negra “___ de ahorro” (solo el número; la palabra está en la plantilla)
-    doc.setTextColor('#FFFFFF');      // texto blanco sobre cinta negra
-    doc.setFontSize(24);
-    doc.text(ahorroMensualTxt, P.ahorroMensualCinta.x, P.ahorroMensualCinta.y, { align: 'center' });
-    doc.setTextColor(darkTextColor);  // restaurar color
+    // // Cinta negra “___ de ahorro” (solo el número; la palabra está en la plantilla)
+    // doc.setTextColor('#FFFFFF');      // texto blanco sobre cinta negra
+    // doc.setFontSize(24);
+    // doc.text(ahorroMensualTxt, P.ahorroMensualCinta.x, P.ahorroMensualCinta.y, { align: 'center' });
+    // doc.setTextColor(darkTextColor);  // restaurar color
 
-    // Card izquierdo: “Actualmente pagas” (CFE) y “Con Terra Energy pagarás”
-    doc.setFontSize(16);
-    doc.text(cfeActualTxt,    P.cfeActualmentePagas.x, P.cfeActualmentePagas.y, { align: 'center' });
-    doc.text(totalPeriodoTxt, P.terraPagaras.x,        P.terraPagaras.y,        { align: 'center' });
+    // // Card izquierdo: “Actualmente pagas” (CFE) y “Con Terra Energy pagarás”
+    // doc.setFontSize(16);
+    // doc.text(cfeActualTxt,    P.cfeActualmentePagas.x, P.cfeActualmentePagas.y, { align: 'center' });
+    // doc.text(totalPeriodoTxt, P.terraPagaras.x,        P.terraPagaras.y,        { align: 'center' });
 
-    // Card derecho: “Pago — TOTAL de suscripción + CFE”
-    doc.setFontSize(18);
-    doc.text(totalPeriodoTxt, P.pagoTotalPeriodo.x, P.pagoTotalPeriodo.y, { align: 'center' });
+    // // Card derecho: “Pago — TOTAL de suscripción + CFE”
+    // doc.setFontSize(18);
+    // doc.text(totalPeriodoTxt, P.pagoTotalPeriodo.x, P.pagoTotalPeriodo.y, { align: 'center' });
 
     // Franja inferior
     // “Con tu contrato a …” -> Solo el texto central (el label negro y el *Ahorro aproximado están en plantilla)
@@ -188,7 +188,7 @@ export async function createProspectQuotePdfUseCase(
 
     // Pastilla derecha “ahorrarás ___”
     doc.setFontSize(16);
-    doc.text(ahorroAnualTxt, P.ahorroAnualPastilla.x, P.ahorroAnualPastilla.y, { align: 'center' });
+    // doc.text(ahorroAnualTxt, P.ahorroAnualPastilla.x, P.ahorroAnualPastilla.y, { align: 'center' });
 
     // Restaurar color/estilo
     doc.setTextColor(darkTextColor);
