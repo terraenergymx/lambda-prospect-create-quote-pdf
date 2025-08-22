@@ -152,8 +152,35 @@ export async function createProspectQuotePdfUseCase(
     // Chips (potencia/espacio)
     doc.setFontSize(16);
     doc.setTextColor(darkTextColor);
-    doc.text(potenciaTxt, P.potencia.x, P.potencia.y, { align: 'center', baseline: 'middle' });
-    doc.text(areaTxt,     P.espacio.x,  P.espacio.y,  { align: 'center', baseline: 'middle' });
+    doc.text("01", (50*W), (50*H), { align: 'center', baseline: 'middle' });
+    doc.text("02", (50*W), (100*H), { align: 'center', baseline: 'middle' });
+    doc.text("03", (50*W), (150*H), { align: 'center', baseline: 'middle' });
+    doc.text("04", (50*W), (200*H), { align: 'center', baseline: 'middle' });
+    doc.text("05", (50*W), (250*H), { align: 'center', baseline: 'middle' });
+    doc.text("06", (50*W), (300*H), { align: 'center', baseline: 'middle' });
+    doc.text("07", (100*W), (50*H), { align: 'center', baseline: 'middle' });
+    doc.text("08", (100*W), (100*H), { align: 'center', baseline: 'middle' });
+    doc.text("09", (100*W), (150*H), { align: 'center', baseline: 'middle' });
+    doc.text("10", (100*W), (200*H), { align: 'center', baseline: 'middle' });
+    doc.text("11", (100*W), (250*H), { align: 'center', baseline: 'middle' });
+    doc.text("12", (100*W), (300*H), { align: 'center', baseline: 'middle' });
+    doc.text("13", (150*W), (50*H), { align: 'center', baseline: 'middle' });
+    doc.text("14", (150*W), (100*H), { align: 'center', baseline: 'middle' });
+    doc.text("15", (150*W), (150*H), { align: 'center', baseline: 'middle' });
+    doc.text("16", (150*W), (200*H), { align: 'center', baseline: 'middle' });
+    doc.text("17", (150*W), (250*H), { align: 'center', baseline: 'middle' });
+    doc.text("18", (150*W), (300*H), { align: 'center', baseline: 'middle' });
+    doc.text("19", (200*W), (50*H), { align: 'center', baseline: 'middle' });
+    doc.text("20", (200*W), (100*H), { align: 'center', baseline: 'middle' });
+    doc.text("20", (200*W), (150*H), { align: 'center', baseline: 'middle' });
+    doc.text("20", (200*W), (200*H), { align: 'center', baseline: 'middle' });
+    doc.text("20", (200*W), (250*H), { align: 'center', baseline: 'middle' });
+    doc.text("20", (200*W), (300*H), { align: 'center', baseline: 'middle' });
+    doc.text("20", (250*W), (50*H), { align: 'center', baseline: 'middle' });
+    doc.text("20", (250*W), (150*H), { align: 'center', baseline: 'middle' });
+    doc.text("20", (250*W), (200*H), { align: 'center', baseline: 'middle' });
+    doc.text("20", (250*W), (250*H), { align: 'center', baseline: 'middle' });
+    doc.text("20", (250*W), (300*H), { align: 'center', baseline: 'middle' });
 
     // “Suscripción mensual:”
     // doc.setFontSize(18);
