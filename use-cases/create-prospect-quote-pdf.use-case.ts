@@ -22,7 +22,7 @@ export async function createProspectQuotePdfUseCase(
         throw new Error('Información de prospecto incompleta.');
     }
 
-    if (!request.system_proposed.system_power_w || !request.system_proposed.required_area_m2) {
+    if (!request.quote_details.system_proposed.system_power_w || !request.quote_details.system_proposed.required_area_m2) {
         throw new Error('Información del sistema propuesto faltante.');
     }
 
@@ -44,14 +44,14 @@ export async function createProspectQuotePdfUseCase(
 
     // Este desarrollo tal ves se ocupe en el futuro
     // Tarifa CFE
-    // const cfeTariffId = request.quote_details.cfe_info.tariff_type_id;
-    // // Verificar que exista la tarifa y obtener su nombre
-    // const cfeTariff = await prospectQuoteRepository.getCfeTariffById(cfeTariffId);
-    // if (cfeTariff === null) {
-    //     throw new Error(`La tarifa CFE con ID ${cfeTariffId} no existe.`);
-    // } else {
-    //     request.quote_details.cfe_info = cfeTariff;
-    // }
+    const cfeTariffId = request.quote_details.cfe_info.tariff_type_id;
+    // Verificar que exista la tarifa y obtener su nombre
+    const cfeTariff = await prospectQuoteRepository.getCfeTariffById(cfeTariffId);
+    if (cfeTariff === null) {
+        throw new Error(`La tarifa CFE con ID ${cfeTariffId} no existe.`);
+    } else {
+        request.quote_details.cfe_info = cfeTariff;
+    }
 
     // Crear la entidad ProspectQuote
     const prospectQuote = new ProspectQuote(
@@ -59,9 +59,17 @@ export async function createProspectQuotePdfUseCase(
         formattedLastName,
         request.prospect_id,
         request.terralink_id,
-        request.system_proposed,
         request.quote_details
     );
+
+    // ========= Helpers de formato =========
+    const fmtCurrency = (n: number | string) =>
+    Number(n).toLocaleString('es-MX', { style: 'currency', currency: 'MXN', maximumFractionDigits: 0 });
+
+    const fmtInt = (n: number | string) => Number(n).toLocaleString('es-MX');
+
+    const fmtPower = (w: number | string) => `${fmtInt(w)} W`;      // sin convertir a kWp
+    const fmtArea  = (m2: number | string) => `${fmtInt(m2)} m²`;   // solo unidades
 
     // Procedemos a generar el PDF
     // 1. Crear un nuevo documento PDF en tamaño carta (215.9 x 279.4 mm)
@@ -108,28 +116,19 @@ export async function createProspectQuotePdfUseCase(
     doc.addPage();
     doc.addImage(paginaDesgloceBase64Content, 'PNG', 0, 0, 279.4, 215.9);
 
-    // ========= Helpers de formato =========
-    const fmtCurrency = (n: number | string) =>
-    Number(n).toLocaleString('es-MX', { style: 'currency', currency: 'MXN', maximumFractionDigits: 0 });
-
-    const fmtInt = (n: number | string) => Number(n).toLocaleString('es-MX');
-
-    const fmtPower = (w: number | string) => `${fmtInt(w)} W`;      // sin convertir a kWp
-    const fmtArea  = (m2: number | string) => `${fmtInt(m2)} m²`;   // solo unidades
-
     // ========= Atajos a los datos (usamos exactamente lo que llega) =========
-    const sp = request.system_proposed;
+    const sp = request.quote_details.system_proposed;
     const qd = request.quote_details;
 
     const potenciaTxt   = fmtPower(sp.system_power_w);
     const areaTxt       = fmtArea(sp.required_area_m2);
 
-    const suscripcionMensualTxt = fmtCurrency(qd.terraenergy_info.suscription_bill);
-    const ahorroMensualTxt      = fmtCurrency(qd.savings.period_mxn);
-    const ahorroAnualTxt        = fmtCurrency(qd.savings.annual_mxn);
+    // const suscripcionMensualTxt = fmtCurrency(qd.terraenergy_info.suscription_bill);
+    // const ahorroMensualTxt      = fmtCurrency(qd.savings.period_mxn);
+    // const ahorroAnualTxt        = fmtCurrency(qd.savings.annual_mxn);
 
-    const cfeActualTxt          = fmtCurrency(qd.cfe_info.actual_payment);
-    const totalPeriodoTxt       = fmtCurrency(qd.total_period_payment);
+    // const cfeActualTxt          = fmtCurrency(qd.cfe_info.actual_payment);
+    // const totalPeriodoTxt       = fmtCurrency(qd.total_period_payment);
 
     // ========= Posiciones (en mm) =========
     // Carta apaisada: W=279.4, H=215.9
@@ -185,7 +184,7 @@ export async function createProspectQuotePdfUseCase(
     annual: 'anual',
     };
     const periodLabel = periodLabelMap[qd.source_consumption.period] ?? qd.source_consumption.period;
-    doc.text(`Con tu contrato a ${periodLabel}`, P.contratoPeriodoTexto.x, P.contratoPeriodoTexto.y, { align: 'center' });
+    doc.text(periodLabel, P.contratoPeriodoTexto.x, P.contratoPeriodoTexto.y, { align: 'center' });
 
     // Pastilla derecha “ahorrarás ___”
     doc.setFontSize(16);

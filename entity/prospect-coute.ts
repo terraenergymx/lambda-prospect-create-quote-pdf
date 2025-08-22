@@ -1,35 +1,46 @@
-export type ConsumptionPeriod = "monthly" | "bimonthly";
+export type SourceConsumptionPeriod = string; // ej: "6 bimestres"
+export type SavingsPeriod = string;           // ej: "Bimestral"
+export type SavingsYearPeriod = string;       // ej: "3 años"
+
+export interface SourceConsumption {
+  period: SourceConsumptionPeriod;
+  consumption_KWh: number;
+}
+
 export interface SystemProposed {
   system_power_w: number;
+  system_energy_KWh: number;
   required_area_m2: number;
 }
 
-export interface SourceConsumption {
-  period: ConsumptionPeriod;
-  average_period_bill: number;
-}
-
 export interface CfeInfo {
-  actual_payment: number;
+  tariff_type_id: number;
+  tariff_type: string;
+  price_KWh: number;
+  actual_bimontly_payment: number; // nombre exacto del JSON
 }
 
 export interface TerraenergyInfo {
-  estimated_cfe_saving: number; // porcentaje estimado de ahorro vs CFE (asumiendo %)
-  suscription_bill: number;     // (sic) conservamos el nombre tal cual llega en el JSON
+  price_KWh: number;
+  bimontly_payment: number; // nombre exacto del JSON
+  montly_payment: number;   // nombre exacto del JSON
 }
 
 export interface Savings {
   percentage: number;
-  period_mxn: number;
-  annual_mxn: number;
+  period: SavingsPeriod;               // "Bimestral"
+  year_period: SavingsYearPeriod;      // "3 años"
+  period_saving: number;               // 1900
+  year_period_saving: number;          // 1900
+  eight_years_saving: number;          // 52800
 }
 
 export interface QuoteDetails {
   source_consumption: SourceConsumption;
+  system_proposed: SystemProposed;
   cfe_info: CfeInfo;
   terraenergy_info: TerraenergyInfo;
   savings: Savings;
-  total_period_payment: number;
 }
 
 export class ProspectQuote {
@@ -37,7 +48,6 @@ export class ProspectQuote {
   public last_name: string;
   public prospect_id: string;
   public terralink_id: string;
-  public system_proposed: SystemProposed;
   public quote_details: QuoteDetails;
 
   constructor(
@@ -45,19 +55,17 @@ export class ProspectQuote {
     last_name: string,
     prospect_id: string,
     terralink_id: string,
-    system_proposed: SystemProposed,
     quote_details: QuoteDetails
   ) {
     this.name = name;
     this.last_name = last_name;
     this.prospect_id = prospect_id;
     this.terralink_id = terralink_id;
-    this.system_proposed = system_proposed;
     this.quote_details = quote_details;
   }
 
   // =====================
-  // Factories & Helpers
+  // Helpers / Factory
   // =====================
 
   private static toNumber(val: unknown, fallback = 0): number {
@@ -69,45 +77,45 @@ export class ProspectQuote {
   }
 
   static fromJSON(data: any): ProspectQuote {
-    // system_proposed
-    const system_proposed: SystemProposed = {
-      system_power_w: ProspectQuote.toNumber(data?.system_proposed?.system_power_w),
-      required_area_m2: ProspectQuote.toNumber(data?.system_proposed?.required_area_m2),
-    };
-
-    // source_consumption
-    const period = (data?.quote_details?.source_consumption?.period ?? "bimonthly") as ConsumptionPeriod;
     const source_consumption: SourceConsumption = {
-      period,
-      average_period_bill: ProspectQuote.toNumber(data?.quote_details?.source_consumption?.average_period_bill),
+      period: data?.quote_details?.source_consumption?.period ?? "",
+      consumption_KWh: ProspectQuote.toNumber(data?.quote_details?.source_consumption?.consumption_KWh),
     };
 
-    // cfe_info
+    const system_proposed: SystemProposed = {
+      system_power_w: ProspectQuote.toNumber(data?.quote_details?.system_proposed?.system_power_w),
+      system_energy_KWh: ProspectQuote.toNumber(data?.quote_details?.system_proposed?.system_energy_KWh),
+      required_area_m2: ProspectQuote.toNumber(data?.quote_details?.system_proposed?.required_area_m2),
+    };
+
     const cfe_info: CfeInfo = {
-      actual_payment: ProspectQuote.toNumber(data?.quote_details?.cfe_info?.actual_payment),
+      tariff_type_id: ProspectQuote.toNumber(data?.quote_details?.cfe_info?.tariff_type_id),
+      tariff_type: data?.quote_details?.cfe_info?.tariff_type ?? "",
+      price_KWh: ProspectQuote.toNumber(data?.quote_details?.cfe_info?.price_KWh),
+      actual_bimontly_payment: ProspectQuote.toNumber(data?.quote_details?.cfe_info?.actual_bimontly_payment),
     };
 
-    // terraenergy_info
     const terraenergy_info: TerraenergyInfo = {
-      estimated_cfe_saving: ProspectQuote.toNumber(data?.quote_details?.terraenergy_info?.estimated_cfe_saving),
-      suscription_bill: ProspectQuote.toNumber(data?.quote_details?.terraenergy_info?.suscription_bill),
+      price_KWh: ProspectQuote.toNumber(data?.quote_details?.terraenergy_info?.price_KWh),
+      bimontly_payment: ProspectQuote.toNumber(data?.quote_details?.terraenergy_info?.bimontly_payment),
+      montly_payment: ProspectQuote.toNumber(data?.quote_details?.terraenergy_info?.montly_payment),
     };
 
-    // savings
     const savings: Savings = {
       percentage: ProspectQuote.toNumber(data?.quote_details?.savings?.percentage),
-      period_mxn: ProspectQuote.toNumber(data?.quote_details?.savings?.period_mxn),
-      annual_mxn: ProspectQuote.toNumber(data?.quote_details?.savings?.annual_mxn),
+      period: data?.quote_details?.savings?.period ?? "",
+      year_period: data?.quote_details?.savings?.year_period ?? "",
+      period_saving: ProspectQuote.toNumber(data?.quote_details?.savings?.period_saving),
+      year_period_saving: ProspectQuote.toNumber(data?.quote_details?.savings?.year_period_saving),
+      eight_years_saving: ProspectQuote.toNumber(data?.quote_details?.savings?.eight_years_saving),
     };
-
-    const total_period_payment = ProspectQuote.toNumber(data?.quote_details?.total_period_payment);
 
     const quote_details: QuoteDetails = {
       source_consumption,
+      system_proposed,
       cfe_info,
       terraenergy_info,
       savings,
-      total_period_payment,
     };
 
     return new ProspectQuote(
@@ -115,7 +123,6 @@ export class ProspectQuote {
       data?.last_name ?? "",
       data?.prospect_id ?? "",
       data?.terralink_id ?? "",
-      system_proposed,
       quote_details
     );
   }
@@ -126,64 +133,48 @@ export class ProspectQuote {
       last_name: this.last_name,
       prospect_id: this.prospect_id,
       terralink_id: this.terralink_id,
-      system_proposed: this.system_proposed,
       quote_details: this.quote_details,
     };
   }
 
   // =====================
-  // Getters conservando nombres si aplica
+  // Getters
   // =====================
 
-  public getClientName(): string {
-    return this.name;
-  }
-  public getClientLastName(): string {
-    return this.last_name;
-  }
-  public getProspectId(): string {
-    return this.prospect_id;
-  }
-  public getTerralinkId(): string {
-    return this.terralink_id;
-  }
-  public getSystemProposed(): SystemProposed {
-    return this.system_proposed;
-  }
-  public getQuoteDetails(): QuoteDetails {
-    return this.quote_details;
-  }
-  public getTotalSystemPower(): number {
-    return this.system_proposed.system_power_w;
-  }
+  public getClientName(): string { return this.name; }
+  public getClientLastName(): string { return this.last_name; }
+  public getProspectId(): string { return this.prospect_id; }
+  public getTerralinkId(): string { return this.terralink_id; }
 
-  // ==== NUEVOS GETTERS ajustados al nuevo esquema ====
+  // Atajos a quote_details
+  public getQuoteDetails(): QuoteDetails { return this.quote_details; }
+  public getSystemProposed(): SystemProposed { return this.quote_details.system_proposed; }
 
-  public getConsumptionPeriod(): ConsumptionPeriod {
-    return this.quote_details.source_consumption.period;
-  }
-  public getAveragePeriodBill(): number {
-    return this.quote_details.source_consumption.average_period_bill;
-  }
-  public getActualCfePayment(): number {
-    return this.quote_details.cfe_info.actual_payment;
-  }
-  public getTerraSubscriptionBill(): number {
-    return this.quote_details.terraenergy_info.suscription_bill;
-  }
-  public getEstimatedCfeSavingPercentage(): number {
-    return this.quote_details.terraenergy_info.estimated_cfe_saving;
-  }
-  public getSavingsPercentage(): number {
-    return this.quote_details.savings.percentage;
-  }
-  public getSavingsPeriod(): number {
-    return this.quote_details.savings.period_mxn;
-  }
-  public getSavingsAnnual(): number {
-    return this.quote_details.savings.annual_mxn;
-  }
-  public getTotalPeriodPayment(): number {
-    return this.quote_details.total_period_payment;
-  }
+  // System proposed
+  public getTotalSystemPowerW(): number { return this.quote_details.system_proposed.system_power_w; }
+  public getSystemEnergyKWh(): number { return this.quote_details.system_proposed.system_energy_KWh; }
+  public getRequiredAreaM2(): number { return this.quote_details.system_proposed.required_area_m2; }
+
+  // Consumo
+  public getSourceConsumptionPeriod(): string { return this.quote_details.source_consumption.period; }
+  public getSourceConsumptionKWh(): number { return this.quote_details.source_consumption.consumption_KWh; }
+
+  // CFE
+  public getCfeTariffTypeId(): number { return this.quote_details.cfe_info.tariff_type_id; }
+  public getCfeTariffType(): string { return this.quote_details.cfe_info.tariff_type; }
+  public getCfePriceKWh(): number { return this.quote_details.cfe_info.price_KWh; }
+  public getCfeActualBimontlyPayment(): number { return this.quote_details.cfe_info.actual_bimontly_payment; }
+
+  // Terraenergy
+  public getTerraPriceKWh(): number { return this.quote_details.terraenergy_info.price_KWh; }
+  public getTerraBimontlyPayment(): number { return this.quote_details.terraenergy_info.bimontly_payment; }
+  public getTerraMontlyPayment(): number { return this.quote_details.terraenergy_info.montly_payment; }
+
+  // Savings
+  public getSavingsPercentage(): number { return this.quote_details.savings.percentage; }
+  public getSavingsPeriodLabel(): string { return this.quote_details.savings.period; }         // "Bimestral"
+  public getSavingsYearPeriodLabel(): string { return this.quote_details.savings.year_period; } // "3 años"
+  public getSavingsPeriodAmount(): number { return this.quote_details.savings.period_saving; }
+  public getSavingsYearPeriodAmount(): number { return this.quote_details.savings.year_period_saving; }
+  public getSavingsEightYearsAmount(): number { return this.quote_details.savings.eight_years_saving; }
 }
