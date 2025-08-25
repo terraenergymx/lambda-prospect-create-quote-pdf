@@ -185,8 +185,13 @@ export async function createProspectQuotePdfUseCase(
 
     // --- Generar y Guardar el PDF (usar repositorio) ---
     const epoch = Date.now();
-    const key = `prospect/${prospectQuote.getProspectId()}/quote/${epoch}.pdf`;
-
+    let key = '';
+    if (prospectQuote.getProspectId() == "0") {
+        key = `prospect-terralink/${prospectQuote.getTerralinkId()}/quote/${epoch}.pdf`;
+    }else {
+        key = `prospect/${prospectQuote.getProspectId()}/quote/${epoch}.pdf`;
+    }
+    
     const uploadResult = await prospectQuoteRepository.uploadPdfToS3(key, Buffer.from(pdfBuffer));
     return {
         message: 'PDF de cotización generado exitosamente.',
