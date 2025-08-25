@@ -219,40 +219,41 @@ export async function createProspectQuotePdfUseCase(
     // doc.text("09", (0.9*W), (0.7*H), { align: 'center', baseline: 'middle' });
     // doc.text("09", (0.9*W), (0.8*H), { align: 'center', baseline: 'middle' });
 
-    doc.text(prospectQuote.getSourceConsumptionPeriod(), (0.28*W), (0.08*H), { align: 'center', baseline: 'middle' });
+    doc.text(prospectQuote.getSourceConsumptionPeriod(), (0.28*W), (0.07*H), { align: 'center', baseline: 'middle' });
     doc.setTextColor(primaryGreen);
-    doc.text(prospectQuote.getSourceConsumptionKWh().toString(), (0.14*W), (0.12*H), { align: 'center', baseline: 'middle' });
+    doc.text(prospectQuote.getSourceConsumptionKWh().toString(), (0.12*W), (0.11*H), { align: 'center', baseline: 'middle' }).setFont('', 'bold');
     doc.setTextColor(darkTextColor);
 
-    doc.text(prospectQuote.getTotalSystemPowerW().toString(), (0.21*W), (0.22*H), { align: 'center', baseline: 'middle' });
-    doc.text(prospectQuote.getSystemEnergyKWh().toString(), (0.51*W), (0.22*H), { align: 'center', baseline: 'middle' });
-    doc.text(prospectQuote.getRequiredAreaM2().toString() + ' m2', (0.81*W), (0.22*H), { align: 'center', baseline: 'middle' });
+    doc.setFontSize(20);
+    doc.text(prospectQuote.getTotalSystemPowerW().toString(), (0.21*W), (0.21*H), { align: 'center', baseline: 'middle' });
+    doc.text(prospectQuote.getSystemEnergyKWh().toString(), (0.5*W), (0.21*H), { align: 'center', baseline: 'middle' });
+    doc.text(prospectQuote.getRequiredAreaM2().toString() + ' m2', (0.8*W), (0.21*H), { align: 'center', baseline: 'middle' });
+
+    doc.setFontSize(11);
+    doc.text(prospectQuote.getCfePriceKWh().toString(), (0.182*W), (0.452*H), { align: 'center', baseline: 'middle' });
+    doc.setFontSize(24);
+    doc.text(prospectQuote.getCfeActualBimontlyPayment().toString(), (0.15*W), (0.57*H), { align: 'center', baseline: 'middle' }).setFont('', 'bold');
 
     doc.setFontSize(12);
-    doc.text(prospectQuote.getCfePriceKWh().toString(), (0.18*W), (0.45*H), { align: 'center', baseline: 'middle' });
-    doc.setFontSize(16);
-    doc.text(prospectQuote.getCfeActualBimontlyPayment().toString(), (0.15*W), (0.57*H), { align: 'center', baseline: 'middle' });
-
-    doc.setFontSize(12);
-    doc.text(prospectQuote.getTerraPriceKWh().toString(), (0.42*W), (0.45*H), { align: 'center', baseline: 'middle' });
-    doc.setFontSize(16);
+    doc.text(prospectQuote.getTerraPriceKWh().toString(), (0.412*W), (0.452*H), { align: 'center', baseline: 'middle' });
+    doc.setFontSize(24);
     doc.setTextColor(primaryGreen);
-    doc.text(prospectQuote.getTerraBimontlyPayment().toString(), (0.39*W), (0.57*H), { align: 'center', baseline: 'middle' });
-    doc.text(prospectQuote.getTerraMontlyPayment().toString(), (0.42*W), (0.71*H), { align: 'center', baseline: 'middle' });
+    doc.text(prospectQuote.getTerraBimontlyPayment().toString(), (0.39*W), (0.57*H), { align: 'center', baseline: 'middle' }).setFont('', 'bold');
+    doc.text(prospectQuote.getTerraMontlyPayment().toString(), (0.422*W), (0.71*H), { align: 'center', baseline: 'middle' }).setFont('', 'bold');
 
 
-    doc.setFontSize(32);
+    doc.setFontSize(40);
     doc.setTextColor(lightGrayBg);
-    doc.text(prospectQuote.getSavingsPercentage().toString(), (0.7*W), (0.4*H), { align: 'center', baseline: 'middle' });
+    doc.text(prospectQuote.getSavingsPercentage().toString() + " %", (0.7*W), (0.4*H), { align: 'center', baseline: 'middle' }).setFont('', 'bold');
     doc.setFontSize(16);
     doc.setTextColor(darkTextColor);
-    doc.text(prospectQuote.getSavingsPeriodLabel().toString(), (0.67*W), (0.53*H), { align: 'center', baseline: 'middle' });
-    doc.text(prospectQuote.getSavingsYearPeriodLabel().toString(), (0.595*W), (0.62*H), { align: 'center', baseline: 'middle' });
-    doc.text(prospectQuote.getSavingsEightYearsAmount().toString(), (0.71*W), (0.67*H), { align: 'center', baseline: 'middle' });
-    doc.setTextColor(primaryGreen);
-    doc.text(prospectQuote.getSavingsPeriodLabel().toString(), (0.89*W), (0.53*H), { align: 'center', baseline: 'middle' });
-    doc.text(prospectQuote.getSavingsYearPeriodLabel().toString(), (0.89*W), (0.61*H), { align: 'center', baseline: 'middle' });
-    doc.text(prospectQuote.getSavingsEightYearsAmount().toString(), (0.89*W), (0.68*H), { align: 'center', baseline: 'middle' });
+    doc.text(prospectQuote.getSavingsPeriodLabel().toString(), (0.68*W), (0.52*H), { align: 'center', baseline: 'middle' });
+    doc.text(prospectQuote.getSavingsYearPeriodLabel().toString(), (0.6*W), (0.61*H), { align: 'center', baseline: 'middle' });
+    doc.text("8", (0.72*W), (0.67*H), { align: 'center', baseline: 'middle' });
+    doc.setTextColor(lightGrayBg);
+    doc.text(prospectQuote.getSavingsPeriodLabel().toString(), (0.88*W), (0.52*H), { align: 'center', baseline: 'middle' });
+    doc.text(prospectQuote.getSavingsYearPeriodLabel().toString(), (0.88*W), (0.6*H), { align: 'center', baseline: 'middle' });
+    doc.text(prospectQuote.getSavingsEightYearsAmount().toString(), (0.88*W), (0.69*H), { align: 'center', baseline: 'middle' });
 
     // Restaurar color/estilo
     doc.setTextColor(darkTextColor);
@@ -269,7 +270,7 @@ export async function createProspectQuotePdfUseCase(
     const currentDate = new Date();
     const options: Intl.DateTimeFormatOptions = { day: '2-digit', month: 'long', year: 'numeric' };
     const formattedDate = currentDate.toLocaleDateString('es-MX', options);
-    doc.text(formattedDate, 100, 162.5).setFont('', 'bold');
+    doc.text(formattedDate, (0.39*W), (0.79*H)).setFont('', 'bold');
 
     // --- Generar el PDF ---
     const pdfBuffer = doc.output('arraybuffer');
