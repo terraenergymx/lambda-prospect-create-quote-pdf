@@ -116,20 +116,6 @@ export async function createProspectQuotePdfUseCase(
     doc.addPage();
     doc.addImage(paginaDesgloceBase64Content, 'PNG', 0, 0, 279.4, 215.9);
 
-    // ========= Atajos a los datos (usamos exactamente lo que llega) =========
-    const sp = request.quote_details.system_proposed;
-    const qd = request.quote_details;
-
-    const potenciaTxt   = fmtPower(sp.system_power_w);
-    const areaTxt       = fmtArea(sp.required_area_m2);
-
-    // const suscripcionMensualTxt = fmtCurrency(qd.terraenergy_info.suscription_bill);
-    // const ahorroMensualTxt      = fmtCurrency(qd.savings.period_mxn);
-    // const ahorroAnualTxt        = fmtCurrency(qd.savings.annual_mxn);
-
-    // const cfeActualTxt          = fmtCurrency(qd.cfe_info.actual_payment);
-    // const totalPeriodoTxt       = fmtCurrency(qd.total_period_payment);
-
     // ========= Posiciones (en mm) =========
     // Carta apaisada: W=279.4, H=215.9
     const W = 279.4, H = 215.9;
@@ -152,121 +138,121 @@ export async function createProspectQuotePdfUseCase(
     // Chips (potencia/espacio)
     doc.setFontSize(16);
     doc.setTextColor(darkTextColor);
-    doc.text("01", (0.1*W), (0.1*H), { align: 'center', baseline: 'middle' });
-    doc.text("01", (0.1*W), (0.2*H), { align: 'center', baseline: 'middle' });
-    doc.text("01", (0.1*W), (0.3*H), { align: 'center', baseline: 'middle' });
-    doc.text("01", (0.1*W), (0.4*H), { align: 'center', baseline: 'middle' });
-    doc.text("01", (0.1*W), (0.5*H), { align: 'center', baseline: 'middle' });
-    doc.text("01", (0.1*W), (0.6*H), { align: 'center', baseline: 'middle' });
-    doc.text("01", (0.1*W), (0.7*H), { align: 'center', baseline: 'middle' });
-    doc.text("01", (0.1*W), (0.8*H), { align: 'center', baseline: 'middle' });
-    doc.text("01", (0.1*W), (0.9*H), { align: 'center', baseline: 'middle' });
-    doc.text("02", (0.2*W), (0.1*H), { align: 'center', baseline: 'middle' });
-    doc.text("02", (0.2*W), (0.2*H), { align: 'center', baseline: 'middle' });
-    doc.text("02", (0.2*W), (0.3*H), { align: 'center', baseline: 'middle' });
-    doc.text("02", (0.2*W), (0.4*H), { align: 'center', baseline: 'middle' });
-    doc.text("02", (0.2*W), (0.5*H), { align: 'center', baseline: 'middle' });
-    doc.text("02", (0.2*W), (0.6*H), { align: 'center', baseline: 'middle' });
-    doc.text("02", (0.2*W), (0.7*H), { align: 'center', baseline: 'middle' });
-    doc.text("02", (0.2*W), (0.8*H), { align: 'center', baseline: 'middle' });
-    doc.text("02", (0.2*W), (0.9*H), { align: 'center', baseline: 'middle' });
-    doc.text("03", (0.3*W), (0.1*H), { align: 'center', baseline: 'middle' });
-    doc.text("03", (0.3*W), (0.2*H), { align: 'center', baseline: 'middle' });
-    doc.text("03", (0.3*W), (0.3*H), { align: 'center', baseline: 'middle' });
-    doc.text("03", (0.3*W), (0.4*H), { align: 'center', baseline: 'middle' });
-    doc.text("03", (0.3*W), (0.5*H), { align: 'center', baseline: 'middle' });
-    doc.text("03", (0.3*W), (0.6*H), { align: 'center', baseline: 'middle' });
-    doc.text("03", (0.3*W), (0.7*H), { align: 'center', baseline: 'middle' });
-    doc.text("03", (0.3*W), (0.8*H), { align: 'center', baseline: 'middle' });
-    doc.text("03", (0.3*W), (0.9*H), { align: 'center', baseline: 'middle' });
-    doc.text("04", (0.4*W), (0.1*H), { align: 'center', baseline: 'middle' });
-    doc.text("04", (0.4*W), (0.2*H), { align: 'center', baseline: 'middle' });
-    doc.text("04", (0.4*W), (0.3*H), { align: 'center', baseline: 'middle' });
-    doc.text("04", (0.4*W), (0.4*H), { align: 'center', baseline: 'middle' });
-    doc.text("04", (0.4*W), (0.5*H), { align: 'center', baseline: 'middle' });
-    doc.text("04", (0.4*W), (0.6*H), { align: 'center', baseline: 'middle' });
-    doc.text("04", (0.4*W), (0.7*H), { align: 'center', baseline: 'middle' });
-    doc.text("04", (0.4*W), (0.8*H), { align: 'center', baseline: 'middle' });
-    doc.text("04", (0.4*W), (0.9*H), { align: 'center', baseline: 'middle' });
-    doc.text("05", (0.5*W), (0.1*H), { align: 'center', baseline: 'middle' });
-    doc.text("05", (0.5*W), (0.2*H), { align: 'center', baseline: 'middle' });
-    doc.text("05", (0.5*W), (0.3*H), { align: 'center', baseline: 'middle' });
-    doc.text("05", (0.5*W), (0.4*H), { align: 'center', baseline: 'middle' });
-    doc.text("05", (0.5*W), (0.5*H), { align: 'center', baseline: 'middle' });
-    doc.text("05", (0.5*W), (0.6*H), { align: 'center', baseline: 'middle' });
-    doc.text("05", (0.5*W), (0.7*H), { align: 'center', baseline: 'middle' });
-    doc.text("05", (0.5*W), (0.8*H), { align: 'center', baseline: 'middle' });
-    doc.text("05", (0.5*W), (0.9*H), { align: 'center', baseline: 'middle' });
-    doc.text("06", (0.6*W), (0.1*H), { align: 'center', baseline: 'middle' });
-    doc.text("06", (0.6*W), (0.2*H), { align: 'center', baseline: 'middle' });
-    doc.text("06", (0.6*W), (0.3*H), { align: 'center', baseline: 'middle' });
-    doc.text("06", (0.6*W), (0.4*H), { align: 'center', baseline: 'middle' });
-    doc.text("06", (0.6*W), (0.5*H), { align: 'center', baseline: 'middle' });
-    doc.text("06", (0.6*W), (0.6*H), { align: 'center', baseline: 'middle' });
-    doc.text("06", (0.6*W), (0.7*H), { align: 'center', baseline: 'middle' });
-    doc.text("06", (0.6*W), (0.8*H), { align: 'center', baseline: 'middle' });
-    doc.text("06", (0.6*W), (0.9*H), { align: 'center', baseline: 'middle' });
-    doc.text("07", (0.7*W), (0.1*H), { align: 'center', baseline: 'middle' });
-    doc.text("07", (0.7*W), (0.2*H), { align: 'center', baseline: 'middle' });
-    doc.text("07", (0.7*W), (0.3*H), { align: 'center', baseline: 'middle' });
-    doc.text("07", (0.7*W), (0.4*H), { align: 'center', baseline: 'middle' });
-    doc.text("07", (0.7*W), (0.5*H), { align: 'center', baseline: 'middle' });
-    doc.text("07", (0.7*W), (0.6*H), { align: 'center', baseline: 'middle' });
-    doc.text("07", (0.7*W), (0.7*H), { align: 'center', baseline: 'middle' });
-    doc.text("07", (0.7*W), (0.8*H), { align: 'center', baseline: 'middle' });
-    doc.text("07", (0.7*W), (0.9*H), { align: 'center', baseline: 'middle' });
-    doc.text("08", (0.8*W), (0.1*H), { align: 'center', baseline: 'middle' });
-    doc.text("08", (0.8*W), (0.2*H), { align: 'center', baseline: 'middle' });
-    doc.text("08", (0.8*W), (0.3*H), { align: 'center', baseline: 'middle' });
-    doc.text("08", (0.8*W), (0.4*H), { align: 'center', baseline: 'middle' });
-    doc.text("08", (0.8*W), (0.5*H), { align: 'center', baseline: 'middle' });
-    doc.text("08", (0.8*W), (0.6*H), { align: 'center', baseline: 'middle' });
-    doc.text("08", (0.8*W), (0.7*H), { align: 'center', baseline: 'middle' });
-    doc.text("08", (0.8*W), (0.8*H), { align: 'center', baseline: 'middle' });
-    doc.text("08", (0.8*W), (0.9*H), { align: 'center', baseline: 'middle' });
-    doc.text("09", (0.9*W), (0.1*H), { align: 'center', baseline: 'middle' });
-    doc.text("09", (0.9*W), (0.2*H), { align: 'center', baseline: 'middle' });
-    doc.text("09", (0.9*W), (0.3*H), { align: 'center', baseline: 'middle' });
-    doc.text("09", (0.9*W), (0.4*H), { align: 'center', baseline: 'middle' });
-    doc.text("09", (0.9*W), (0.5*H), { align: 'center', baseline: 'middle' });
-    doc.text("09", (0.9*W), (0.6*H), { align: 'center', baseline: 'middle' });
-    doc.text("09", (0.9*W), (0.7*H), { align: 'center', baseline: 'middle' });
-    doc.text("09", (0.9*W), (0.8*H), { align: 'center', baseline: 'middle' });
+    // doc.text("01", (0.1*W), (0.1*H), { align: 'center', baseline: 'middle' });
+    // doc.text("01", (0.1*W), (0.2*H), { align: 'center', baseline: 'middle' });
+    // doc.text("01", (0.1*W), (0.3*H), { align: 'center', baseline: 'middle' });
+    // doc.text("01", (0.1*W), (0.4*H), { align: 'center', baseline: 'middle' });
+    // doc.text("01", (0.1*W), (0.5*H), { align: 'center', baseline: 'middle' });
+    // doc.text("01", (0.1*W), (0.6*H), { align: 'center', baseline: 'middle' });
+    // doc.text("01", (0.1*W), (0.7*H), { align: 'center', baseline: 'middle' });
+    // doc.text("01", (0.1*W), (0.8*H), { align: 'center', baseline: 'middle' });
+    // doc.text("01", (0.1*W), (0.9*H), { align: 'center', baseline: 'middle' });
+    // doc.text("02", (0.2*W), (0.1*H), { align: 'center', baseline: 'middle' });
+    // doc.text("02", (0.2*W), (0.2*H), { align: 'center', baseline: 'middle' });
+    // doc.text("02", (0.2*W), (0.3*H), { align: 'center', baseline: 'middle' });
+    // doc.text("02", (0.2*W), (0.4*H), { align: 'center', baseline: 'middle' });
+    // doc.text("02", (0.2*W), (0.5*H), { align: 'center', baseline: 'middle' });
+    // doc.text("02", (0.2*W), (0.6*H), { align: 'center', baseline: 'middle' });
+    // doc.text("02", (0.2*W), (0.7*H), { align: 'center', baseline: 'middle' });
+    // doc.text("02", (0.2*W), (0.8*H), { align: 'center', baseline: 'middle' });
+    // doc.text("02", (0.2*W), (0.9*H), { align: 'center', baseline: 'middle' });
+    // doc.text("03", (0.3*W), (0.1*H), { align: 'center', baseline: 'middle' });
+    // doc.text("03", (0.3*W), (0.2*H), { align: 'center', baseline: 'middle' });
+    // doc.text("03", (0.3*W), (0.3*H), { align: 'center', baseline: 'middle' });
+    // doc.text("03", (0.3*W), (0.4*H), { align: 'center', baseline: 'middle' });
+    // doc.text("03", (0.3*W), (0.5*H), { align: 'center', baseline: 'middle' });
+    // doc.text("03", (0.3*W), (0.6*H), { align: 'center', baseline: 'middle' });
+    // doc.text("03", (0.3*W), (0.7*H), { align: 'center', baseline: 'middle' });
+    // doc.text("03", (0.3*W), (0.8*H), { align: 'center', baseline: 'middle' });
+    // doc.text("03", (0.3*W), (0.9*H), { align: 'center', baseline: 'middle' });
+    // doc.text("04", (0.4*W), (0.1*H), { align: 'center', baseline: 'middle' });
+    // doc.text("04", (0.4*W), (0.2*H), { align: 'center', baseline: 'middle' });
+    // doc.text("04", (0.4*W), (0.3*H), { align: 'center', baseline: 'middle' });
+    // doc.text("04", (0.4*W), (0.4*H), { align: 'center', baseline: 'middle' });
+    // doc.text("04", (0.4*W), (0.5*H), { align: 'center', baseline: 'middle' });
+    // doc.text("04", (0.4*W), (0.6*H), { align: 'center', baseline: 'middle' });
+    // doc.text("04", (0.4*W), (0.7*H), { align: 'center', baseline: 'middle' });
+    // doc.text("04", (0.4*W), (0.8*H), { align: 'center', baseline: 'middle' });
+    // doc.text("04", (0.4*W), (0.9*H), { align: 'center', baseline: 'middle' });
+    // doc.text("05", (0.5*W), (0.1*H), { align: 'center', baseline: 'middle' });
+    // doc.text("05", (0.5*W), (0.2*H), { align: 'center', baseline: 'middle' });
+    // doc.text("05", (0.5*W), (0.3*H), { align: 'center', baseline: 'middle' });
+    // doc.text("05", (0.5*W), (0.4*H), { align: 'center', baseline: 'middle' });
+    // doc.text("05", (0.5*W), (0.5*H), { align: 'center', baseline: 'middle' });
+    // doc.text("05", (0.5*W), (0.6*H), { align: 'center', baseline: 'middle' });
+    // doc.text("05", (0.5*W), (0.7*H), { align: 'center', baseline: 'middle' });
+    // doc.text("05", (0.5*W), (0.8*H), { align: 'center', baseline: 'middle' });
+    // doc.text("05", (0.5*W), (0.9*H), { align: 'center', baseline: 'middle' });
+    // doc.text("06", (0.6*W), (0.1*H), { align: 'center', baseline: 'middle' });
+    // doc.text("06", (0.6*W), (0.2*H), { align: 'center', baseline: 'middle' });
+    // doc.text("06", (0.6*W), (0.3*H), { align: 'center', baseline: 'middle' });
+    // doc.text("06", (0.6*W), (0.4*H), { align: 'center', baseline: 'middle' });
+    // doc.text("06", (0.6*W), (0.5*H), { align: 'center', baseline: 'middle' });
+    // doc.text("06", (0.6*W), (0.6*H), { align: 'center', baseline: 'middle' });
+    // doc.text("06", (0.6*W), (0.7*H), { align: 'center', baseline: 'middle' });
+    // doc.text("06", (0.6*W), (0.8*H), { align: 'center', baseline: 'middle' });
+    // doc.text("06", (0.6*W), (0.9*H), { align: 'center', baseline: 'middle' });
+    // doc.text("07", (0.7*W), (0.1*H), { align: 'center', baseline: 'middle' });
+    // doc.text("07", (0.7*W), (0.2*H), { align: 'center', baseline: 'middle' });
+    // doc.text("07", (0.7*W), (0.3*H), { align: 'center', baseline: 'middle' });
+    // doc.text("07", (0.7*W), (0.4*H), { align: 'center', baseline: 'middle' });
+    // doc.text("07", (0.7*W), (0.5*H), { align: 'center', baseline: 'middle' });
+    // doc.text("07", (0.7*W), (0.6*H), { align: 'center', baseline: 'middle' });
+    // doc.text("07", (0.7*W), (0.7*H), { align: 'center', baseline: 'middle' });
+    // doc.text("07", (0.7*W), (0.8*H), { align: 'center', baseline: 'middle' });
+    // doc.text("07", (0.7*W), (0.9*H), { align: 'center', baseline: 'middle' });
+    // doc.text("08", (0.8*W), (0.1*H), { align: 'center', baseline: 'middle' });
+    // doc.text("08", (0.8*W), (0.2*H), { align: 'center', baseline: 'middle' });
+    // doc.text("08", (0.8*W), (0.3*H), { align: 'center', baseline: 'middle' });
+    // doc.text("08", (0.8*W), (0.4*H), { align: 'center', baseline: 'middle' });
+    // doc.text("08", (0.8*W), (0.5*H), { align: 'center', baseline: 'middle' });
+    // doc.text("08", (0.8*W), (0.6*H), { align: 'center', baseline: 'middle' });
+    // doc.text("08", (0.8*W), (0.7*H), { align: 'center', baseline: 'middle' });
+    // doc.text("08", (0.8*W), (0.8*H), { align: 'center', baseline: 'middle' });
+    // doc.text("08", (0.8*W), (0.9*H), { align: 'center', baseline: 'middle' });
+    // doc.text("09", (0.9*W), (0.1*H), { align: 'center', baseline: 'middle' });
+    // doc.text("09", (0.9*W), (0.2*H), { align: 'center', baseline: 'middle' });
+    // doc.text("09", (0.9*W), (0.3*H), { align: 'center', baseline: 'middle' });
+    // doc.text("09", (0.9*W), (0.4*H), { align: 'center', baseline: 'middle' });
+    // doc.text("09", (0.9*W), (0.5*H), { align: 'center', baseline: 'middle' });
+    // doc.text("09", (0.9*W), (0.6*H), { align: 'center', baseline: 'middle' });
+    // doc.text("09", (0.9*W), (0.7*H), { align: 'center', baseline: 'middle' });
+    // doc.text("09", (0.9*W), (0.8*H), { align: 'center', baseline: 'middle' });
 
-    // “Suscripción mensual:”
-    // doc.setFontSize(18);
-    // doc.text(suscripcionMensualTxt, P.suscripcionMensual.x, P.suscripcionMensual.y, { align: 'center' });
+    doc.text(prospectQuote.getSourceConsumptionPeriod(), (0.28*W), (0.08*H), { align: 'center', baseline: 'middle' });
+    doc.setTextColor(primaryGreen);
+    doc.text(prospectQuote.getSourceConsumptionKWh().toString(), (0.14*W), (0.12*H), { align: 'center', baseline: 'middle' });
+    doc.setTextColor(darkTextColor);
 
-    // // Cinta negra “___ de ahorro” (solo el número; la palabra está en la plantilla)
-    // doc.setTextColor('#FFFFFF');      // texto blanco sobre cinta negra
-    // doc.setFontSize(24);
-    // doc.text(ahorroMensualTxt, P.ahorroMensualCinta.x, P.ahorroMensualCinta.y, { align: 'center' });
-    // doc.setTextColor(darkTextColor);  // restaurar color
+    doc.text(prospectQuote.getTotalSystemPowerW().toString(), (0.21*W), (0.22*H), { align: 'center', baseline: 'middle' });
+    doc.text(prospectQuote.getSystemEnergyKWh().toString(), (0.51*W), (0.22*H), { align: 'center', baseline: 'middle' });
+    doc.text(prospectQuote.getRequiredAreaM2().toString() + ' m2', (0.81*W), (0.22*H), { align: 'center', baseline: 'middle' });
 
-    // // Card izquierdo: “Actualmente pagas” (CFE) y “Con Terra Energy pagarás”
-    // doc.setFontSize(16);
-    // doc.text(cfeActualTxt,    P.cfeActualmentePagas.x, P.cfeActualmentePagas.y, { align: 'center' });
-    // doc.text(totalPeriodoTxt, P.terraPagaras.x,        P.terraPagaras.y,        { align: 'center' });
-
-    // // Card derecho: “Pago — TOTAL de suscripción + CFE”
-    // doc.setFontSize(18);
-    // doc.text(totalPeriodoTxt, P.pagoTotalPeriodo.x, P.pagoTotalPeriodo.y, { align: 'center' });
-
-    // Franja inferior
-    // “Con tu contrato a …” -> Solo el texto central (el label negro y el *Ahorro aproximado están en plantilla)
     doc.setFontSize(12);
-    const periodLabelMap: Record<string, string> = {
-    monthly: 'mensual',
-    bimonthly: 'bimestral',
-    quarterly: 'trimestral',
-    annual: 'anual',
-    };
-    const periodLabel = periodLabelMap[qd.source_consumption.period] ?? qd.source_consumption.period;
-    doc.text(periodLabel, P.contratoPeriodoTexto.x, P.contratoPeriodoTexto.y, { align: 'center' });
-
-    // Pastilla derecha “ahorrarás ___”
+    doc.text(prospectQuote.getCfePriceKWh().toString(), (0.18*W), (0.45*H), { align: 'center', baseline: 'middle' });
     doc.setFontSize(16);
-    // doc.text(ahorroAnualTxt, P.ahorroAnualPastilla.x, P.ahorroAnualPastilla.y, { align: 'center' });
+    doc.text(prospectQuote.getCfeActualBimontlyPayment().toString(), (0.15*W), (0.57*H), { align: 'center', baseline: 'middle' });
+
+    doc.setFontSize(12);
+    doc.text(prospectQuote.getTerraPriceKWh().toString(), (0.42*W), (0.45*H), { align: 'center', baseline: 'middle' });
+    doc.setFontSize(16);
+    doc.setTextColor(primaryGreen);
+    doc.text(prospectQuote.getTerraBimontlyPayment().toString(), (0.39*W), (0.57*H), { align: 'center', baseline: 'middle' });
+    doc.text(prospectQuote.getTerraMontlyPayment().toString(), (0.42*W), (0.71*H), { align: 'center', baseline: 'middle' });
+
+
+    doc.setFontSize(32);
+    doc.setTextColor(lightGrayBg);
+    doc.text(prospectQuote.getSavingsPercentage().toString(), (0.7*W), (0.4*H), { align: 'center', baseline: 'middle' });
+    doc.setFontSize(16);
+    doc.setTextColor(darkTextColor);
+    doc.text(prospectQuote.getSavingsPeriodLabel().toString(), (0.67*W), (0.53*H), { align: 'center', baseline: 'middle' });
+    doc.text(prospectQuote.getSavingsYearPeriodLabel().toString(), (0.595*W), (0.62*H), { align: 'center', baseline: 'middle' });
+    doc.text(prospectQuote.getSavingsEightYearsAmount().toString(), (0.71*W), (0.67*H), { align: 'center', baseline: 'middle' });
+    doc.setTextColor(primaryGreen);
+    doc.text(prospectQuote.getSavingsPeriodLabel().toString(), (0.89*W), (0.53*H), { align: 'center', baseline: 'middle' });
+    doc.text(prospectQuote.getSavingsYearPeriodLabel().toString(), (0.89*W), (0.61*H), { align: 'center', baseline: 'middle' });
+    doc.text(prospectQuote.getSavingsEightYearsAmount().toString(), (0.89*W), (0.68*H), { align: 'center', baseline: 'middle' });
 
     // Restaurar color/estilo
     doc.setTextColor(darkTextColor);
@@ -283,7 +269,7 @@ export async function createProspectQuotePdfUseCase(
     const currentDate = new Date();
     const options: Intl.DateTimeFormatOptions = { day: '2-digit', month: 'long', year: 'numeric' };
     const formattedDate = currentDate.toLocaleDateString('es-MX', options);
-    doc.text(formattedDate, 95, 164.5).setFont('', 'bold');
+    doc.text(formattedDate, 100, 162.5).setFont('', 'bold');
 
     // --- Generar el PDF ---
     const pdfBuffer = doc.output('arraybuffer');
