@@ -66,6 +66,10 @@ export async function createProspectQuotePdfUseCase(
     const fmtCurrency = (n: number | string) =>
     Number(n).toLocaleString('es-MX', { style: 'currency', currency: 'MXN', maximumFractionDigits: 0 });
 
+    // Formatear enteros con separador de miles
+    const fmtDecimal = (n: number | string) =>
+    Number(n).toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
     const fmtInt = (n: number | string) => Number(n).toLocaleString('es-MX');
 
     const fmtPower = (w: number | string) => `${fmtInt(w)} W`;      // sin convertir a kWp
@@ -130,13 +134,13 @@ export async function createProspectQuotePdfUseCase(
     doc.setTextColor(darkTextColor);
     doc.text(prospectQuote.getSourceConsumptionPeriod(), (0.29*W), (0.071*H), { align: 'center', baseline: 'middle' });
     doc.setTextColor(primaryGreen);
-    doc.text(prospectQuote.getSourceConsumptionKWh().toString(), (0.121*W), (0.112*H), { align: 'center', baseline: 'middle' });
+    doc.text(fmtDecimal(prospectQuote.getSourceConsumptionKWh()).toString() + " KWh.", (0.18*W), (0.112*H), { align: 'center', baseline: 'middle' });
     doc.setTextColor(darkTextColor);
 
     doc.setFontSize(20);
-    doc.text(prospectQuote.getTotalSystemPowerW().toString() + " W", (0.21*W), (0.212*H), { align: 'center', baseline: 'middle' });
-    doc.text(prospectQuote.getSystemEnergyKWh().toString() + " kWh", (0.5*W), (0.212*H), { align: 'center', baseline: 'middle' });
-    doc.text(prospectQuote.getRequiredAreaM2().toString() + ' m2', (0.8*W), (0.212*H), { align: 'center', baseline: 'middle' });
+    doc.text(fmtDecimal(prospectQuote.getTotalSystemPowerW()).toString() + " W", (0.21*W), (0.212*H), { align: 'center', baseline: 'middle' });
+    doc.text(fmtDecimal(prospectQuote.getSystemEnergyKWh()).toString() + " kWh", (0.5*W), (0.212*H), { align: 'center', baseline: 'middle' });
+    doc.text(fmtDecimal(prospectQuote.getRequiredAreaM2()).toString() + ' m2', (0.8*W), (0.212*H), { align: 'center', baseline: 'middle' });
 
     doc.setFontSize(11);
     doc.text(prospectQuote.getCfePriceKWh().toString(), (0.182*W), (0.452*H), { align: 'center', baseline: 'middle' });
@@ -148,7 +152,7 @@ export async function createProspectQuotePdfUseCase(
     doc.setFontSize(32);
     doc.setTextColor(primaryGreen);
     doc.text(fmtCurrency(prospectQuote.getTerraBimontlyPayment()), (0.39*W), (0.57*H), { align: 'center', baseline: 'middle' });
-    doc.text(fmtCurrency(prospectQuote.getTerraMontlyPayment()), (0.45*W), (0.705*H), { align: 'right', baseline: 'middle' });
+    doc.text(fmtCurrency(prospectQuote.getTerraMontlyPayment()), (0.45*W), (0.705*H), { align: 'left', baseline: 'middle' });
 
     doc.setFontSize(60);
     doc.setTextColor(lightGrayBg);
@@ -165,7 +169,7 @@ export async function createProspectQuotePdfUseCase(
 
     // Restaurar color/estilo
     doc.setTextColor(darkTextColor);
-    doc.setFontSize(8);
+    doc.setFontSize(7);
 
     // Pagina de beneficios
     doc.addPage();
@@ -178,7 +182,7 @@ export async function createProspectQuotePdfUseCase(
     const currentDate = new Date();
     const options: Intl.DateTimeFormatOptions = { day: '2-digit', month: 'long', year: 'numeric' };
     const formattedDate = currentDate.toLocaleDateString('es-MX', options);
-    doc.text(formattedDate, (0.369*W), (0.756*H));
+    doc.text(formattedDate, (0.369*W), (0.758*H));
 
     // --- Generar el PDF ---
     const pdfBuffer = doc.output('arraybuffer');
