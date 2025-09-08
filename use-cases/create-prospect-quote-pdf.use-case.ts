@@ -134,7 +134,7 @@ export async function createProspectQuotePdfUseCase(
     doc.setTextColor(darkTextColor);
     doc.text(prospectQuote.getSourceConsumptionPeriod(), (0.29*W), (0.071*H), { align: 'center', baseline: 'middle' });
     doc.setTextColor(primaryGreen);
-    doc.text(fmtDecimal(prospectQuote.getSourceConsumptionKWh()) + " KWh.", (0.12*W), (0.112*H), { align: 'left', baseline: 'middle' });
+    doc.text(fmtDecimal(prospectQuote.getSourceConsumptionKWh()) + " KWh.", (0.11*W), (0.112*H), { align: 'left', baseline: 'middle' });
     doc.setTextColor(darkTextColor);
 
     doc.setFontSize(20);
@@ -152,7 +152,7 @@ export async function createProspectQuotePdfUseCase(
     doc.setFontSize(32);
     doc.setTextColor(primaryGreen);
     doc.text(fmtCurrency(prospectQuote.getTerraBimontlyPayment()), (0.39*W), (0.57*H), { align: 'center', baseline: 'middle' });
-    doc.text(fmtCurrency(prospectQuote.getTerraMontlyPayment()), (0.39*W), (0.705*H), { align: 'left', baseline: 'middle' });
+    doc.text(fmtCurrency(prospectQuote.getTerraMontlyPayment()), (0.38*W), (0.705*H), { align: 'left', baseline: 'middle' });
 
     doc.setFontSize(60);
     doc.setTextColor(lightGrayBg);
