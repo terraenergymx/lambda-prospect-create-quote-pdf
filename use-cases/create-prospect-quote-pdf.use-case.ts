@@ -134,25 +134,25 @@ export async function createProspectQuotePdfUseCase(
     doc.setTextColor(darkTextColor);
     doc.text(prospectQuote.getSourceConsumptionPeriod(), (0.29*W), (0.071*H), { align: 'center', baseline: 'middle' });
     doc.setTextColor(primaryGreen);
-    doc.text(fmtDecimal(prospectQuote.getSourceConsumptionKWh()).toString() + " KWh.", (0.18*W), (0.112*H), { align: 'center', baseline: 'middle' });
+    doc.text(fmtDecimal(prospectQuote.getSourceConsumptionKWh()) + " KWh.", (0.18*W), (0.112*H), { align: 'center', baseline: 'middle' });
     doc.setTextColor(darkTextColor);
 
     doc.setFontSize(20);
-    doc.text(fmtDecimal(prospectQuote.getTotalSystemPowerW()).toString() + " W", (0.21*W), (0.212*H), { align: 'center', baseline: 'middle' });
-    doc.text(fmtDecimal(prospectQuote.getSystemEnergyKWh()).toString() + " kWh", (0.5*W), (0.212*H), { align: 'center', baseline: 'middle' });
-    doc.text(fmtDecimal(prospectQuote.getRequiredAreaM2()).toString() + ' m2', (0.8*W), (0.212*H), { align: 'center', baseline: 'middle' });
+    doc.text(fmtDecimal(prospectQuote.getTotalSystemPowerW()) + " W", (0.21*W), (0.212*H), { align: 'center', baseline: 'middle' });
+    doc.text(fmtDecimal(prospectQuote.getSystemEnergyKWh()) + " kWh", (0.5*W), (0.212*H), { align: 'center', baseline: 'middle' });
+    doc.text(prospectQuote.getRequiredAreaM2().toString() + ' m2', (0.8*W), (0.212*H), { align: 'center', baseline: 'middle' });
 
     doc.setFontSize(11);
-    doc.text(prospectQuote.getCfePriceKWh().toString(), (0.182*W), (0.452*H), { align: 'center', baseline: 'middle' });
+    doc.text(fmtCurrency(prospectQuote.getCfePriceKWh()), (0.182*W), (0.452*H), { align: 'center', baseline: 'middle' });
     doc.setFontSize(32);
     doc.text(fmtCurrency(prospectQuote.getCfeActualBimontlyPayment()), (0.16*W), (0.57*H), { align: 'center', baseline: 'middle' });
 
     doc.setFontSize(11);
-    doc.text(prospectQuote.getTerraPriceKWh().toString(), (0.415*W), (0.452*H), { align: 'center', baseline: 'middle' });
+    doc.text(fmtCurrency(prospectQuote.getTerraPriceKWh()), (0.415*W), (0.452*H), { align: 'center', baseline: 'middle' });
     doc.setFontSize(32);
     doc.setTextColor(primaryGreen);
     doc.text(fmtCurrency(prospectQuote.getTerraBimontlyPayment()), (0.39*W), (0.57*H), { align: 'center', baseline: 'middle' });
-    doc.text(fmtCurrency(prospectQuote.getTerraMontlyPayment()), (0.45*W), (0.705*H), { align: 'left', baseline: 'middle' });
+    doc.text(fmtCurrency(prospectQuote.getTerraMontlyPayment()), (0.41*W), (0.705*H), { align: 'left', baseline: 'middle' });
 
     doc.setFontSize(60);
     doc.setTextColor(lightGrayBg);
@@ -182,7 +182,7 @@ export async function createProspectQuotePdfUseCase(
     const currentDate = new Date();
     const options: Intl.DateTimeFormatOptions = { day: '2-digit', month: 'long', year: 'numeric' };
     const formattedDate = currentDate.toLocaleDateString('es-MX', options);
-    doc.text(formattedDate, (0.369*W), (0.758*H));
+    doc.text(formattedDate, (0.369*W), (0.757*H));
 
     // --- Generar el PDF ---
     const pdfBuffer = doc.output('arraybuffer');
