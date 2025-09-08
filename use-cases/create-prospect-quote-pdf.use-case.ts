@@ -148,7 +148,7 @@ export async function createProspectQuotePdfUseCase(
     doc.setFontSize(32);
     doc.setTextColor(primaryGreen);
     doc.text(fmtCurrency(prospectQuote.getTerraBimontlyPayment()), (0.39*W), (0.57*H), { align: 'center', baseline: 'middle' });
-    doc.text(fmtCurrency(prospectQuote.getTerraMontlyPayment()), (0.45*W), (0.705*H), { align: 'center', baseline: 'middle' });
+    doc.text(fmtCurrency(prospectQuote.getTerraMontlyPayment()), (0.45*W), (0.705*H), { align: 'right', baseline: 'middle' });
 
     doc.setFontSize(60);
     doc.setTextColor(lightGrayBg);
@@ -157,7 +157,7 @@ export async function createProspectQuotePdfUseCase(
     doc.setTextColor(darkTextColor);
     doc.text(prospectQuote.getSavingsPeriodLabel().toString(), (0.7*W), (0.516*H), { align: 'center', baseline: 'middle' });
     doc.text(prospectQuote.getSavingsYearPeriodLabel().toString(), (0.616*W), (0.615*H), { align: 'center', baseline: 'middle' });
-    doc.text("8", (0.707*W), (0.67*H), { align: 'center', baseline: 'middle' });
+    doc.text(prospectQuote.getSavingsYearPeriodLabel().toString().slice(0, 1), (0.707*W), (0.67*H), { align: 'center', baseline: 'middle' });
     doc.setTextColor(lightGrayBg);
     doc.text(fmtCurrency(prospectQuote.getSavingsPeriodAmount()), (0.88*W), (0.52*H), { align: 'center', baseline: 'middle' });
     doc.text(fmtCurrency(prospectQuote.getSavingsYearPeriodAmount()), (0.88*W), (0.605*H), { align: 'center', baseline: 'middle' });

@@ -85,7 +85,7 @@ export function ProspectQuoteRepository() {
    * @param body Contenido del PDF como Buffer.
    * @returns Objeto con el nombre del bucket y la clave del objeto subido.
    */
-  async function uploadPdfToS3(key: string, body: Buffer): Promise<{ bucket: string; key: string }> {
+  async function uploadPdfToS3(key: string, body: Buffer): Promise<{ bucket: string; key: string, url: string }> {
     try {
       const result = await uploadObject(key, body, 'application/pdf');
       return result;

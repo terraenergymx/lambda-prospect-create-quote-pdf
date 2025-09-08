@@ -3,5 +3,6 @@ export interface CreateProspectQuotePdfResponse {
     data: {
         bucket: string;
         key: string;
+        url: string;
     };
 }
