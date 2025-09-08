@@ -134,7 +134,7 @@ export async function createProspectQuotePdfUseCase(
     doc.setTextColor(darkTextColor);
     doc.text(prospectQuote.getSourceConsumptionPeriod(), (0.29*W), (0.071*H), { align: 'center', baseline: 'middle' });
     doc.setTextColor(primaryGreen);
-    doc.text(fmtDecimal(prospectQuote.getSourceConsumptionKWh()) + " KWh.", (0.18*W), (0.112*H), { align: 'center', baseline: 'middle' });
+    doc.text(fmtDecimal(prospectQuote.getSourceConsumptionKWh()) + " KWh.", (0.16*W), (0.112*H), { align: 'center', baseline: 'middle' });
     doc.setTextColor(darkTextColor);
 
     doc.setFontSize(20);
@@ -143,16 +143,16 @@ export async function createProspectQuotePdfUseCase(
     doc.text(prospectQuote.getRequiredAreaM2().toString() + ' m2', (0.8*W), (0.212*H), { align: 'center', baseline: 'middle' });
 
     doc.setFontSize(11);
-    doc.text(fmtCurrency(prospectQuote.getCfePriceKWh()), (0.182*W), (0.452*H), { align: 'center', baseline: 'middle' });
+    doc.text("$" + fmtDecimal(prospectQuote.getCfePriceKWh()), (0.182*W), (0.452*H), { align: 'center', baseline: 'middle' });
     doc.setFontSize(32);
     doc.text(fmtCurrency(prospectQuote.getCfeActualBimontlyPayment()), (0.16*W), (0.57*H), { align: 'center', baseline: 'middle' });
 
     doc.setFontSize(11);
-    doc.text(fmtCurrency(prospectQuote.getTerraPriceKWh()), (0.415*W), (0.452*H), { align: 'center', baseline: 'middle' });
+    doc.text("$" + fmtDecimal(prospectQuote.getTerraPriceKWh()), (0.415*W), (0.452*H), { align: 'center', baseline: 'middle' });
     doc.setFontSize(32);
     doc.setTextColor(primaryGreen);
     doc.text(fmtCurrency(prospectQuote.getTerraBimontlyPayment()), (0.39*W), (0.57*H), { align: 'center', baseline: 'middle' });
-    doc.text(fmtCurrency(prospectQuote.getTerraMontlyPayment()), (0.41*W), (0.705*H), { align: 'left', baseline: 'middle' });
+    doc.text(fmtCurrency(prospectQuote.getTerraMontlyPayment()), (0.35*W), (0.705*H), { align: 'left', baseline: 'middle' });
 
     doc.setFontSize(60);
     doc.setTextColor(lightGrayBg);
