@@ -55,6 +55,7 @@ jobs:
           DbHost=${{ secrets.DB_HOST_STAGING }}
           DbPort=${{ secrets.DB_PORT_STAGING }}
           DbSecretName=${{ secrets.DB_SECRET_NAME_STAGING }}
+          DbName=${{ secrets.AURORA_DB_NAME }}
           S3BucketName=${{ secrets.S3_BUCKET_STAGING }}
 
   #--- TRABAJO PARA DESPLEGAR A PRODUCCIÓN ---
@@ -103,4 +104,5 @@ jobs:
           DbHost=${{ secrets.DB_HOST_PRODUCTION }}
           DbPort=${{ secrets.DB_PORT_PRODUCTION }}
           DbSecretName=${{ secrets.DB_SECRET_NAME_PRODUCTION }}
+          DbName=${{ secrets.AURORA_DB_NAME }}
           S3BucketName=${{ secrets.S3_BUCKET_PRODUCTION }}
