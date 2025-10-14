@@ -30,10 +30,19 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       # 3. Construye el proyecto (compila TS, prepara dependencias)
-      - name: Build Project
+      - name: Build and Package Project
         run: |
+          # 1. Instala todas las dependencias para compilar TypeScript
           npm ci
+
+          # 2. Compila el código de TypeScript a JavaScript en la carpeta 'dist'
           npm run build
+
+          # 3. Copia package.json para saber qué dependencias instalar
+          cp package.json package-lock.json dist/
+
+          # 4. Entra a la carpeta 'dist' e instala SOLO las dependencias de producción
+          cd dist && npm ci --omit=dev
       
       # 4. Despliega la pila de STAGING con SAM
       - name: Deploy Staging Stack
@@ -69,15 +78,24 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Build Project
+      - name: Build and Package Project
         run: |
+          # 1. Instala todas las dependencias para compilar TypeScript
           npm ci
+
+          # 2. Compila el código de TypeScript a JavaScript en la carpeta 'dist'
           npm run build
+
+          # 3. Copia package.json para saber qué dependencias instalar
+          cp package.json package-lock.json dist/
+
+          # 4. Entra a la carpeta 'dist' e instala SOLO las dependencias de producción
+          cd dist && npm ci --omit=dev
           
       # Despliega la pila de PRODUCCIÓN con SAM
       - name: Deploy Production Stack
         run: >
-          sam deploy --stack-name rospect-create-quote-pdf-production
+          sam deploy --stack-name prospect-create-quote-pdf-production
           --resolve-s3 ${{ secrets.SAM_CLI_S3_BUCKET }}
           --capabilities CAPABILITY_IAM --no-fail-on-empty-changeset
           --parameter-overrides
