@@ -160,7 +160,7 @@ export async function createProspectQuotePdfUseCase(
     doc.setFontSize(16);
     doc.setTextColor(darkTextColor);
     doc.text(prospectQuote.getSavingsPeriodLabel().toString(), (0.7*W), (0.516*H), { align: 'center', baseline: 'middle' });
-    doc.text(prospectQuote.getSavingsYearPeriodLabel().toString(), (0.616*W), (0.615*H), { align: 'center', baseline: 'middle' });
+    // doc.text(prospectQuote.getSavingsYearPeriodLabel().toString(), (0.616*W), (0.615*H), { align: 'center', baseline: 'middle' });
     doc.text(prospectQuote.getSavingsYearPeriodLabel().toString().slice(0, 1), (0.707*W), (0.67*H), { align: 'center', baseline: 'middle' });
     doc.setTextColor(lightGrayBg);
     doc.text(fmtCurrency(prospectQuote.getSavingsPeriodAmount()), (0.88*W), (0.52*H), { align: 'center', baseline: 'middle' });
