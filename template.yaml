@@ -33,7 +33,7 @@ Resources:
     Properties:
       FunctionName: !Sub "prospect-create-quote-pdf-${Environment}" # Nombre de función dinámico
       CodeUri: dist/
-      Handler: app.handler
+      Handler: index.handler
       AutoPublishAlias: live # Un alias genérico, el stage del API Gateway le dará el contexto
       DeploymentPreference:
         Type: Linear10PercentEvery1Minute

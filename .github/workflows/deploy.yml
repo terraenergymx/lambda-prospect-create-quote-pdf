@@ -38,7 +38,7 @@ jobs:
       # 4. Despliega la pila de STAGING con SAM
       - name: Deploy Staging Stack
         run: >
-          sam deploy --stack-name prospect-pdf-staging
+          sam deploy --stack-name prospect-create-quote-pdf-staging
           --resolve-s3 ${{ secrets.SAM_CLI_S3_BUCKET }}
           --capabilities CAPABILITY_IAM --no-fail-on-empty-changeset
           --parameter-overrides
@@ -46,7 +46,7 @@ jobs:
           DbHost=${{ secrets.DB_HOST_STAGING }}
           DbPort=${{ secrets.DB_PORT_STAGING }}
           DbSecretName=${{ secrets.DB_SECRET_NAME_STAGING }}
-          S3BucketName=project-aurora-staging
+          S3BucketName=${{ secrets.S3_BUCKET_STAGING }}
 
   #--- TRABAJO PARA DESPLEGAR A PRODUCCIÓN ---
   deploy-production:
@@ -77,7 +77,7 @@ jobs:
       # Despliega la pila de PRODUCCIÓN con SAM
       - name: Deploy Production Stack
         run: >
-          sam deploy --stack-name prospect-pdf-production
+          sam deploy --stack-name rospect-create-quote-pdf-production
           --resolve-s3 ${{ secrets.SAM_CLI_S3_BUCKET }}
           --capabilities CAPABILITY_IAM --no-fail-on-empty-changeset
           --parameter-overrides
@@ -85,4 +85,4 @@ jobs:
           DbHost=${{ secrets.DB_HOST_PRODUCTION }}
           DbPort=${{ secrets.DB_PORT_PRODUCTION }}
           DbSecretName=${{ secrets.DB_SECRET_NAME_PRODUCTION }}
-          S3BucketName=project-aurora-production
+          S3BucketName=${{ secrets.S3_BUCKET_PRODUCTION }}
