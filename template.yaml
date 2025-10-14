@@ -1,4 +1,4 @@
-AWSTemplateFormatVersion: '2010-09-09'
+AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 Description: Función para crear PDFs de cotizaciones (parametrizada por ambiente).
 
@@ -37,7 +37,7 @@ Resources:
       AutoPublishAlias: live # Un alias genérico, el stage del API Gateway le dará el contexto
       DeploymentPreference:
         Type: Linear10PercentEvery1Minute
-      
+
       # Usamos los parámetros para definir las variables de entorno
       Environment:
         Variables:
@@ -46,7 +46,14 @@ Resources:
           DB_PORT: !Ref DbPort
           DB_SECRET_NAME: !Ref DbSecretName
           S3_BUCKET_NAME: !Ref S3BucketName
-      
+
+      Policies:
+        - Statement:
+            - Effect: Allow
+              Action:
+                - secretsmanager:GetSecretValue
+              Resource: !Sub "arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:${DbSecretName}-*"
+
       Events:
         ApiEvent:
           Type: Api
