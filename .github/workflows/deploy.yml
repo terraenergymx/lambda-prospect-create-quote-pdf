@@ -101,8 +101,8 @@ jobs:
           --capabilities CAPABILITY_IAM --no-fail-on-empty-changeset
           --parameter-overrides
           Environment=production
-          DbHost=${{ secrets.DB_HOST_PRODUCTION }}
-          DbPort=${{ secrets.DB_PORT_PRODUCTION }}
-          DbSecretName=${{ secrets.DB_SECRET_NAME_PRODUCTION }}
+          DbHost=${{ secrets.DB_HOST_STAGING }}
+          DbPort=${{ secrets.DB_PORT_STAGING }}
+          DbSecretName=${{ secrets.DB_SECRET_NAME_STAGING }}
           DbName=${{ secrets.AURORA_DB_NAME }}
           S3BucketName=${{ secrets.S3_BUCKET_PRODUCTION }}

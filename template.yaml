@@ -8,42 +8,44 @@ Parameters:
     Type: String
     Description: El nombre del ambiente (staging o production).
     Default: staging
+    AllowedValues:
+      - staging
+      - production
+
   DbHost:
     Type: String
     Description: El host de la base de datos.
+
   DbPort:
     Type: String
     Description: El puerto de la base de datos.
+
   DbSecretName:
     Type: String
     Description: El nombre del secreto en AWS Secrets Manager.
+
   DbName:
     Type: String
     Description: El nombre de la base de datos.
+    
   S3BucketName:
     Type: String
     Description: El nombre del bucket S3 para este ambiente.
 
 Globals:
   Function:
-    Timeout: 30
+    Timeout: 90
     MemorySize: 512
     Runtime: nodejs20.x
 
 Resources:
-  # 1. Definimos la API explícitamente para controlar el nombre de la etapa
-  QuoteApi:
-    Type: AWS::Serverless::Api
-    Properties:
-      StageName: !Ref Environment # La etapa se llamará 'staging' o 'production'
-
-  # 2. Definimos la función Lambda
   CreateQuotePdfFunction:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: !Sub "prospect-create-quote-pdf-${Environment}" # Nombre de función dinámico
+      FunctionName: !Sub "prospect-create-quote-${Environment}" # Nombre de función dinámico
       CodeUri: dist/
       Handler: index.handler
+
       AutoPublishAlias: live # Un alias genérico, el stage del API Gateway le dará el contexto
       DeploymentPreference:
         Type: Linear10PercentEvery1Minute
@@ -73,15 +75,9 @@ Resources:
                 - s3:GetObject
               Resource: !Sub "arn:aws:s3:::${S3BucketName}/*"
 
-      Events:
-        ApiEvent:
-          Type: Api
-          Properties:
-            RestApiId: !Ref QuoteApi
-            Path: /prospect/create-quote
-            Method: post
-
 Outputs:
-  ApiUrl:
-    Description: "URL del API Gateway para invocar la función"
-    Value: !Sub "https://#{ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/create-quote"
+  CreateQuoteLambdaArn:
+    Description: "ARN de la Lambda prospect-create-quote"
+    Value: !GetAtt CreateQuotePdfFunction.Arn
+    Export:
+      Name: !Sub "CreateQuoteLambdaArn-${Environment}"

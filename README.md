@@ -59,7 +59,6 @@ Para el despliegue y la ejecución, se necesita configurar los siguientes secret
 -   `AWS_SECRET_ACCESS_KEY`: Secret Access Key de AWS.
 -   `AWS_REGION`: La región de AWS donde desplegarás la Lambda (ej. `us-east-1`).
 -   `LAMBDA_FUNCTION_NAME_PRODUCTION`: El nombre de función Lambda para el entorno de producción.
--   `LAMBDA_FUNCTION_NAME_STAGING`: El nombre de función Lambda para el entorno de staging.
 -   `COGNITO_CLIENT_ID_PRODUCTION`: El Client ID de Cognito para producción.
 -   `COGNITO_SECRET_NAME_PRODUCTION`: El nombre del secreto en AWS Secrets Manager para el Client Secret de Cognito en producción.
 -   `COGNITO_CLIENT_ID_STAGING`: El Client ID de Cognito para staging.
