@@ -44,14 +44,14 @@ export function ProspectQuoteRepository() {
    * @param id ID de la tarifa a verificar.
    * @returns true si la tarifa ya existe, false en caso contrario.
    */
-  async function getCfeTariffById(id: number): Promise<CfeInfo | null> {
+  async function getCfeTariffById(id: number): Promise<{ tariff_type_id: number; tariff_type: string; } | null> {
     console.log(`Verificando si la tarifa CFE con ID ${id} existe...`);
 
     let connection; // Declara la conexión fuera del try para que sea accesible en el finally/catch
     try {
       connection = await beginTransaction();
 
-      const sql = `SELECT name FROM cfe_tariffs WHERE id = ? LIMIT 1;`;
+      const sql = `SELECT id, tariff_code FROM cfe_tariffs WHERE id = ? LIMIT 1;`;
       const params = [id];
 
       // Ejecuta la consulta usando la conexión obtenida.
@@ -64,7 +64,7 @@ export function ProspectQuoteRepository() {
         console.log(`La tarifa CFE con ID ${id} existe.`);
         return {
           tariff_type_id: rows[0].id,
-          tariff_type: rows[0].name,
+          tariff_type: rows[0].tariff_code,
         }; // Retorna la información de la tarifa
       }
       console.log(`La tarifa CFE con ID ${id} no existe.`);
@@ -85,7 +85,7 @@ export function ProspectQuoteRepository() {
    * @param body Contenido del PDF como Buffer.
    * @returns Objeto con el nombre del bucket y la clave del objeto subido.
    */
-  async function uploadPdfToS3(key: string, body: Buffer): Promise<{ bucket: string; key: string }> {
+  async function uploadPdfToS3(key: string, body: Buffer): Promise<{ bucket: string; key: string, url: string }> {
     try {
       const result = await uploadObject(key, body, 'application/pdf');
       return result;

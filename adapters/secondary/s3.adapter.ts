@@ -84,13 +84,13 @@ function getS3Client(): S3Client {
  * @param key La clave (ruta/nombre del archivo) en el bucket de S3.
  * @param body El contenido del objeto a subir (Buffer, ReadableStream, Blob, etc.).
  * @param contentType El tipo de contenido (MIME type) del objeto, por ejemplo, 'application/pdf'.
- * @returns Un objeto con el nombre del bucket y la clave del objeto subido.
+ * @returns Un objeto con el nombre del bucket, la clave y la URL completa del objeto subido.
  */
 export async function uploadObject(
     key: string,
     body: Buffer | Uint8Array | Blob | string,
     contentType: string
-): Promise<{ bucket: string; key: string }> {
+): Promise<{ bucket: string; key: string; url: string }> {
     const client = getS3Client();
     if (!initializedBucketName) {
         throw new Error("El nombre del bucket no está disponible. Asegúrate de que el cliente S3 se inicializó correctamente.");
@@ -106,8 +106,18 @@ export async function uploadObject(
     try {
         const command = new PutObjectCommand(input);
         await client.send(command);
-        console.log(`Objeto subido exitosamente a S3: s3://${initializedBucketName}/${key}`);
-        return { bucket: initializedBucketName, key: key };
+
+        // Obtener la región del cliente para construir la URL
+        const region = await client.config.region();
+        const url = `https://${initializedBucketName}.s3.${region}.amazonaws.com/${key}`;
+
+        console.log(`Objeto subido exitosamente a S3: ${url}`);
+        
+        return { 
+            bucket: initializedBucketName, 
+            key: key, 
+            url: url 
+        };
     } catch (error) {
         console.error(`Error al subir el objeto ${key} a S3:`, error);
         throw error; // Re-lanza el error para que sea manejado por la lógica de la aplicación

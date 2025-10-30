@@ -1,7 +1,5 @@
-# Nombre del workflow que aparecerá en la pestaña "Actions" de GitHub
-name: Deploy Lambda to AWS by Environment
+name: Deploy Lambda with AWS SAM
 
-# Disparadores: Este workflow se ejecutará en cada push a las ramas 'main' y 'develop'
 on:
   push:
     branches:
@@ -9,90 +7,102 @@ on:
       - develop
 
 jobs:
-  deploy_lambda:
+  #--- TRABAJO PARA DESPLEGAR A STAGING ---
+  deploy-staging:
     runs-on: ubuntu-latest
+    # Se ejecuta solo en pushes a la rama 'develop'
+    if: github.ref == 'refs/heads/develop'
+    
     steps:
-      # 1. Descarga tu código del repositorio
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      # 2. Configura el entorno de Node.js
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: '18'
-
-      # 3. Instala las dependencias del proyecto
-      - name: Install dependencies
-        run: npm ci
-
-      # 4. Compila el código de TypeScript
-      - name: Build TypeScript code
-        run: npm run build
-
-      # 5. Prepara el paquete de producción
-      - name: Prepare production package
-        run: |
-          mkdir -p package
-          cp -r dist/* package/
-          cp package.json package-lock.json package/
-          cd package && npm ci --omit=dev
-
-      # 6. Crea el archivo .zip
-      - name: Create zip archive
-        run: cd package && zip -r ../function.zip .
-
-      # 7. Configura las credenciales de AWS
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
+      
+      # 1. Instala la AWS SAM CLI
+      - uses: aws-actions/setup-sam@v2
+      
+      # 2. Configura las credenciales de AWS
+      - uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      # 8. Define variables de entorno y despliega en la Lambda correcta
-      - name: Deploy to Lambda based on branch
+      # 3. Construye el proyecto (compila TS, prepara dependencias)
+      - name: Build and Package Project
         run: |
-          # --- INICIO DE LA LÓGICA CLAVE ---
-          # Determina las variables correctas según la rama
-          if [[ $GITHUB_REF == 'refs/heads/main' ]]; then
-            echo "Setting up PRODUCTION environment"
-            ENVIRONMENT="production"
-            LAMBDA_NAME="${{ secrets.LAMBDA_FUNCTION_NAME_PRODUCTION }}"
-            DB_HOST="${{ secrets.DB_HOST_PRODUCTION }}"
-            DB_PORT="${{ secrets.DB_PORT_PRODUCTION }}"
-            DB_SECRET_NAME="${{ secrets.DB_SECRET_NAME_PRODUCTION }}"
-            S3_BUCKET="project-aurora-production"
-          else
-            echo "Setting up STAGING environment"
-            ENVIRONMENT="staging"
-            LAMBDA_NAME="${{ secrets.LAMBDA_FUNCTION_NAME_STAGING }}"
-            DB_HOST="${{ secrets.DB_HOST_STAGING }}"
-            DB_PORT="${{ secrets.DB_PORT_STAGING }}"
-            DB_SECRET_NAME="${{ secrets.DB_SECRET_NAME_STAGING }}"
-            S3_BUCKET="project-aurora-staging"
-          fi
+          # 1. Instala todas las dependencias para compilar TypeScript
+          npm ci
 
-          echo "Deploying to Lambda: $LAMBDA_NAME"
+          # 2. Compila el código de TypeScript a JavaScript en la carpeta 'dist'
+          npm run build
 
-          # 1. Actualiza el código de la función Lambda específica del ambiente
-          echo "1. Updating function code..."
-          aws lambda update-function-code --function-name "$LAMBDA_NAME" --zip-file fileb://function.zip
+          # 3. Copia package.json para saber qué dependencias instalar
+          cp package.json package-lock.json dist/
+
+          # 4. Entra a la carpeta 'dist' e instala SOLO las dependencias de producción
+          cd dist && npm ci --omit=dev
+      
+      # 4. Despliega la pila de STAGING con SAM
+      - name: Deploy Staging Stack
+        run: >
+          sam deploy --stack-name prospect-create-quote-pdf-staging
+          --resolve-s3 ${{ secrets.SAM_CLI_S3_BUCKET }}
+          --capabilities CAPABILITY_IAM --no-fail-on-empty-changeset
+          --parameter-overrides
+          Environment=staging
+          DbHost=${{ secrets.DB_HOST_STAGING }}
+          DbPort=${{ secrets.DB_PORT_STAGING }}
+          DbSecretName=${{ secrets.DB_SECRET_NAME_STAGING }}
+          DbName=${{ secrets.AURORA_DB_NAME }}
+          S3BucketName=${{ secrets.S3_BUCKET_STAGING }}
+
+  #--- TRABAJO PARA DESPLEGAR A PRODUCCIÓN ---
+  deploy-production:
+    runs-on: ubuntu-latest
+    # Se ejecuta solo en pushes a la rama 'main'
+    if: github.ref == 'refs/heads/main'
+    # Depende de que el deploy a staging haya sido exitoso (si tienes esa lógica)
+    # needs: deploy-staging 
+    
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
           
-          echo "2. Waiting for code update to complete..."
-          aws lambda wait function-updated --function-name "$LAMBDA_NAME"
+      - uses: aws-actions/setup-sam@v2
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Build and Package Project
+        run: |
+          # 1. Instala todas las dependencias para compilar TypeScript
+          npm ci
+
+          # 2. Compila el código de TypeScript a JavaScript en la carpeta 'dist'
+          npm run build
+
+          # 3. Copia package.json para saber qué dependencias instalar
+          cp package.json package-lock.json dist/
+
+          # 4. Entra a la carpeta 'dist' e instala SOLO las dependencias de producción
+          cd dist && npm ci --omit=dev
           
-          # 2. Actualiza la configuración de la función con las variables correctas
-          echo "3. Updating function configuration..."
-          aws lambda update-function-configuration \
-            --function-name "$LAMBDA_NAME" \
-            --environment "{
-              \"Variables\": {
-                \"ENVIRONMENT\": \"$ENVIRONMENT\",
-                \"DB_HOST\": \"$DB_HOST\",
-                \"DB_PORT\": \"$DB_PORT\",
-                \"DB_SECRET_NAME\": \"$DB_SECRET_NAME\",
-                \"DB_NAME\": \"${{ secrets.AURORA_DB_NAME }}\",
-                \"S3_BUCKET\": \"$S3_BUCKET\"
-              }
-            }"
+      # Despliega la pila de PRODUCCIÓN con SAM
+      - name: Deploy Production Stack
+        run: >
+          sam deploy --stack-name prospect-create-quote-pdf-production
+          --resolve-s3 ${{ secrets.SAM_CLI_S3_BUCKET }}
+          --capabilities CAPABILITY_IAM --no-fail-on-empty-changeset
+          --parameter-overrides
+          Environment=production
+          DbHost=${{ secrets.DB_HOST_STAGING }}
+          DbPort=${{ secrets.DB_PORT_STAGING }}
+          DbSecretName=${{ secrets.DB_SECRET_NAME_STAGING }}
+          DbName=${{ secrets.AURORA_DB_NAME }}
+          S3BucketName=${{ secrets.S3_BUCKET_PRODUCTION }}

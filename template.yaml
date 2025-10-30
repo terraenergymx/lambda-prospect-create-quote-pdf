@@ -1,0 +1,83 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: Función para crear PDFs de cotizaciones (parametrizada por ambiente).
+
+# Definimos los parámetros que nuestro pipeline le pasará al template
+Parameters:
+  Environment:
+    Type: String
+    Description: El nombre del ambiente (staging o production).
+    Default: staging
+    AllowedValues:
+      - staging
+      - production
+
+  DbHost:
+    Type: String
+    Description: El host de la base de datos.
+
+  DbPort:
+    Type: String
+    Description: El puerto de la base de datos.
+
+  DbSecretName:
+    Type: String
+    Description: El nombre del secreto en AWS Secrets Manager.
+
+  DbName:
+    Type: String
+    Description: El nombre de la base de datos.
+    
+  S3BucketName:
+    Type: String
+    Description: El nombre del bucket S3 para este ambiente.
+
+Globals:
+  Function:
+    Timeout: 90
+    MemorySize: 512
+    Runtime: nodejs20.x
+
+Resources:
+  CreateQuotePdfFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub "prospect-create-quote-${Environment}" # Nombre de función dinámico
+      CodeUri: dist/
+      Handler: index.handler
+
+      AutoPublishAlias: live # Un alias genérico, el stage del API Gateway le dará el contexto
+      DeploymentPreference:
+        Type: Linear10PercentEvery1Minute
+
+      # Usamos los parámetros para definir las variables de entorno
+      Environment:
+        Variables:
+          ENVIRONMENT: !Ref Environment
+          DB_HOST: !Ref DbHost
+          DB_PORT: !Ref DbPort
+          DB_SECRET_NAME: !Ref DbSecretName
+          DB_NAME: !Ref DbName
+          S3_BUCKET_NAME: !Ref S3BucketName
+
+      Policies:
+        - Statement:
+            - Effect: Allow
+              Action:
+                - secretsmanager:GetSecretValue
+              Resource: !Sub "arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:${DbSecretName}-*"
+
+        - Statement:
+            - Effect: Allow
+              Action:
+                - s3:PutObject
+                - s3:PutObjectAcl
+                - s3:GetObject
+              Resource: !Sub "arn:aws:s3:::${S3BucketName}/*"
+
+Outputs:
+  CreateQuoteLambdaArn:
+    Description: "ARN de la Lambda prospect-create-quote"
+    Value: !GetAtt CreateQuotePdfFunction.Arn
+    Export:
+      Name: !Sub "CreateQuoteLambdaArn-${Environment}"
